@@ -77,9 +77,15 @@ class AuthController extends Controller
     /**
      * Xử lý Đăng xuất
      */
-    public function logout()
+    public function logout(Request $request)
     {
-        Auth::logout();
-        return back()->with('success', 'Đã đăng xuất tài khoản an toàn!');
+       Auth::logout();
+
+        // Hủy session cũ và tạo token mới để chống hack CSRF
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // ÉP ĐÁ VỀ TRANG CHỦ thay vì quay lại trang cũ
+        return redirect()->route('home')->with('success', 'Đã đăng xuất tài khoản an toàn!');
     }
 }

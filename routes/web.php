@@ -11,6 +11,8 @@ use App\Http\Controllers\Admin\CustomerController; // Đã thêm Import cho Cust
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AuthController as FrontendAuthController;
+use App\Http\Controllers\Frontend\AccountController;
+
 
 // ==========================================
 // PHÂN HỆ FRONTEND (KHÁCH HÀNG)
@@ -24,12 +26,18 @@ Route::view('/dieu-khoan', 'frontend.pages.terms')->name('pages.terms');
 Route::post('/khach-hang/login', [FrontendAuthController::class, 'login'])->name('frontend.login');
 Route::post('/khach-hang/logout', [FrontendAuthController::class, 'logout'])->name('frontend.logout');
 Route::post('/khach-hang/register', [FrontendAuthController::class, 'register'])->name('frontend.register');
+Route::middleware('auth')->group(function () {
+    // Trang danh sách đơn hàng
+    Route::get('/tai-khoan/don-hang', [AccountController::class, 'myOrders'])->name('frontend.account.orders');
+    // Trang Thông tin cá nhân
+    Route::get('/tai-khoan/thong-tin', [AccountController::class, 'profile'])->name('frontend.account.profile');
+    Route::put('/tai-khoan/thong-tin', [AccountController::class, 'updateProfile'])->name('frontend.account.update_profile');
+    // Route::get('/tai-khoan/don-hang/{id}', [AccountController::class, 'orderDetail'])->name('frontend.account.order_detail');
+});
 
 // ==========================================
 // PHÂN HỆ ADMIN (QUẢN TRỊ VIÊN)
 // ==========================================
-// Đã bọc Prefix 'admin' và Name 'admin.' ở ngoài cùng.
-// MỌI THỨ bên trong tự động được thừa hưởng, KHÔNG CẦN bọc lại nữa!
 Route::prefix('admin')->name('admin.')->group(function () {
 
     // 1. Route không cần đăng nhập (Trang Login)

@@ -196,7 +196,9 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
                                 <li>
-                                    <a class="dropdown-item fw-medium py-2" href="#"><i class="bi bi-bag-check me-2 text-muted"></i>Đơn hàng của tôi</a>
+                                    <a class="dropdown-item fw-medium py-2" href="{{ route('frontend.account.orders') }}">
+                                        <i class="bi bi-bag-check me-2 text-muted"></i>Đơn hàng của tôi
+                                    </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
