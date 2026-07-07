@@ -5,12 +5,14 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="fw-bold text-dark"><i class="bi bi-person-plus-fill me-2 text-danger"></i> Thêm Khách hàng</h3>
-    <a href="{{ route('admin.user.index') }}" class="btn btn-outline-secondary fw-bold shadow-sm"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
+
+    <a href="{{ route('admin.customers.index') }}" class="btn btn-outline-secondary fw-bold shadow-sm"><i class="bi bi-arrow-left me-1"></i> Quay lại</a>
 </div>
 
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-4">
-        <form action="{{ route('admin.user.store') }}" method="POST">
+
+        <form action="{{ route('admin.customers.store') }}" method="POST">
             @csrf
             <div class="row g-4">
                 <div class="col-md-6">
@@ -54,7 +56,7 @@
                         <label class="form-label fw-semibold">Trạng thái tài khoản</label>
                         <select name="is_active" class="form-select">
                             <option value="1" {{ old('is_active') == '1' ? 'selected' : '' }}>Hoạt động bình thường</option>
-                            <option value="0" {{ old('is_active') == '0' ? 'selected' : '' }}>Khóa tài khoản</option>
+                            <option value="0" {{ old('is_active', '1') == '0' ? 'selected' : '' }}>Khóa tài khoản</option>
                         </select>
                     </div>
                 </div>
