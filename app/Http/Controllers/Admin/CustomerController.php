@@ -3,25 +3,16 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\Contracts\CustomerRepositoryInterface;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
-use App\Models\User;
+use App\Models\User; // Dùng Model User để quản lý tài khoản khách
 
 class CustomerController extends Controller
 {
-    protected CustomerRepositoryInterface $customerRepo;
-
-    public function __construct(CustomerRepositoryInterface $customerRepo)
-    {
-        $this->customerRepo = $customerRepo;
-    }
-
+    // 1. Giao diện Danh sách & Tìm kiếm
     public function index(Request $request)
     {
         $query = User::query();
 
-        // Tìm theo Tên, Số điện thoại hoặc Email
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -36,14 +27,32 @@ class CustomerController extends Controller
         return view('admin.customers.index', compact('customers'));
     }
 
-    public function toggleStatus(int $id)
+    // 2. Thuật toán Đảo trạng thái (Khóa / Mở khóa)
+    public function toggle($id)
     {
         try {
-            $this->customerRepo->toggleStatus($id);
-            return redirect()->back()->with('success', 'Đã cập nhật trạng thái tài khoản khách hàng!');
+            $user = User::findOrFail($id);
+            $user->is_active = !$user->is_active; // Đảo ngược trạng thái
+            $user->save();
+
+            $message = $user->is_active ? 'Đã MỞ KHÓA tài khoản thành công!' : 'Đã KHÓA tài khoản thành công!';
+            return back()->with('success', $message);
+
         } catch (\Exception $e) {
-            Log::error("Lỗi cập nhật trạng thái KH #$id: " . $e->getMessage());
-            return redirect()->back()->with('error', 'Không thể xử lý yêu cầu lúc này.');
+            return back()->with('error', 'Lỗi: ' . $e->getMessage());
         }
+    }
+
+    // (Tạm giữ các hàm rỗng để không bị lỗi khi bấm nút Thêm/Sửa)
+    public function create() {
+        return view('admin.customers.create');
+    }
+    public function edit($id) {
+        $user = User::findOrFail($id);
+        return view('admin.customers.edit', compact('user'));
+    }
+    public function destroy($id) {
+        User::findOrFail($id)->delete();
+        return back()->with('success', 'Đã xóa khách hàng thành công!');
     }
 }
