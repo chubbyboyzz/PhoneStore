@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\CustomerController; // Đã thêm Import cho Customer
 
 use App\Http\Controllers\Frontend\HomeController;
+use App\Http\Controllers\Frontend\AuthController as FrontendAuthController;
 
 // ==========================================
 // PHÂN HỆ FRONTEND (KHÁCH HÀNG)
@@ -20,7 +21,9 @@ Route::view('/gioi-thieu', 'frontend.pages.about')->name('pages.about');
 Route::view('/bao-hanh', 'frontend.pages.warranty')->name('pages.warranty');
 Route::view('/doi-tra', 'frontend.pages.return')->name('pages.return');
 Route::view('/dieu-khoan', 'frontend.pages.terms')->name('pages.terms');
-
+Route::post('/khach-hang/login', [FrontendAuthController::class, 'login'])->name('frontend.login');
+Route::post('/khach-hang/logout', [FrontendAuthController::class, 'logout'])->name('frontend.logout');
+Route::post('/khach-hang/register', [FrontendAuthController::class, 'register'])->name('frontend.register');
 
 // ==========================================
 // PHÂN HỆ ADMIN (QUẢN TRỊ VIÊN)

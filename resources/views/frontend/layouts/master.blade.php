@@ -183,6 +183,31 @@
                             <li><a class="dropdown-item fw-medium py-2" href="{{ route('pages.terms') }}"><i class="bi bi-file-earmark-text me-2 text-muted"></i> Điều khoản sử dụng</a></li>
                         </ul>
                     </li>
+                    @guest
+                        <li class="nav-item ms-3 d-flex align-items-center">
+                            <button type="button" class="btn btn-danger fw-bold shadow-sm rounded-pill px-4" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="bi bi-person-circle me-1"></i> Đăng nhập
+                            </button>
+                        </li>
+                    @else
+                        <li class="nav-item dropdown ms-3 d-flex align-items-center">
+                            <a class="nav-link dropdown-toggle text-white fw-bold px-3 py-2 bg-danger rounded-pill shadow-sm" href="#" data-bs-toggle="dropdown">
+                                <i class="bi bi-person-check-fill me-1"></i> Chào, {{ Auth::user()->name }}
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                                <li>
+                                    <a class="dropdown-item fw-medium py-2" href="#"><i class="bi bi-bag-check me-2 text-muted"></i>Đơn hàng của tôi</a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <form action="{{ route('frontend.logout') }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="dropdown-item fw-medium text-danger py-2"><i class="bi bi-box-arrow-right me-2"></i>Đăng xuất</button>
+                                    </form>
+                                </li>
+                            </ul>
+                        </li>
+                    @endguest
                 </ul>
             </div>
         </div>
@@ -241,6 +266,160 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     @stack('scripts')
+
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 1090; margin-top: 80px;">
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show border-0 shadow-lg rounded-4 p-3 mb-2 custom-toast" role="alert" style="min-width: 320px;">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-check-circle-fill fs-3 me-3 text-success"></i>
+                    <div>
+                        <strong class="text-dark d-block mb-1">Thành công!</strong>
+                        <span class="text-secondary small">{{ session('success') }}</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-lg rounded-4 p-3 mb-2 custom-toast" role="alert" style="min-width: 320px;">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-exclamation-triangle-fill fs-3 me-3 text-danger"></i>
+                    <div>
+                        <strong class="text-dark d-block mb-1">Thất bại!</strong>
+                        <span class="text-secondary small">{{ session('error') }}</span>
+                    </div>
+                </div>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="alert alert-danger alert-dismissible fade show border-0 shadow-lg rounded-4 p-3 mb-2 custom-toast" role="alert" style="min-width: 320px;">
+                <div class="d-flex align-items-center">
+                    <i class="bi bi-x-circle-fill fs-3 me-3 text-danger"></i>
+                    <div>
+                        <strong class="text-dark d-block mb-1">Lỗi dữ liệu!</strong>
+                        <ul class="mb-0 ps-3 small text-secondary">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                </div>
+                <button type="button" class="btn-close shadow-none" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+    </div>
+
+
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark fs-4"><i class="bi bi-box-arrow-in-right text-danger me-2"></i>Đăng nhập khách sỉ</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form action="{{ route('frontend.login') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Email tài khoản</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-envelope text-muted"></i></span>
+                                <input type="email" name="email" class="form-control border-start-0 ps-0 bg-light shadow-none" required placeholder="Nhập email đại lý...">
+                            </div>
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold small">Mật khẩu</label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-end-0"><i class="bi bi-shield-lock text-muted"></i></span>
+                                <input type="password" name="password" class="form-control border-start-0 ps-0 bg-light shadow-none" required placeholder="••••••••">
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 fw-bold py-2 rounded-3 shadow-sm mb-3">ĐĂNG NHẬP HỆ THỐNG</button>
+
+                        <div class="text-center">
+                            <span class="text-muted small">Chưa có tài khoản đại lý?</span>
+                            <a href="#" class="text-danger small fw-bold text-decoration-none ms-1" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký ngay</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg"> <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="modal-header border-bottom-0 pb-0">
+                    <h5 class="modal-title fw-bold text-dark fs-4"><i class="bi bi-person-plus-fill text-danger me-2"></i>Đăng ký đại lý sỉ mới</h5>
+                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body p-4">
+                    <form action="{{ route('frontend.register') }}" method="POST">
+                        @csrf
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold small">Họ tên người liên hệ <span class="text-danger">*</span></label>
+                                    <input type="text" name="name" class="form-control bg-light shadow-none" required value="{{ old('name') }}" placeholder="Ví dụ: Nguyễn Văn A">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold small">Email đăng nhập <span class="text-danger">*</span></label>
+                                    <input type="email" name="email" class="form-control bg-light shadow-none" required value="{{ old('email') }}" placeholder="name@example.com">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold small">Mật khẩu (Tối thiểu 6 số) <span class="text-danger">*</span></label>
+                                    <input type="password" name="password" class="form-control bg-light shadow-none" required placeholder="Tạo mật khẩu...">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold small">Nhập lại mật khẩu <span class="text-danger">*</span></label>
+                                    <input type="password" name="password_confirmation" class="form-control bg-light shadow-none" required placeholder="Gõ lại mật khẩu...">
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold small">Số điện thoại nhận báo giá</label>
+                                    <input type="text" name="phone" class="form-control bg-light shadow-none" value="{{ old('phone') }}" placeholder="Số điện thoại di động hoặc Zalo...">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label fw-semibold small">Địa chỉ tổng kho của đại lý</label>
+                                    <textarea name="address" class="form-control bg-light shadow-none" rows="4" placeholder="Nhập địa chỉ cụ thể để tính toán xe vận chuyển phụ kiện...">{{ old('address') }}</textarea>
+                                </div>
+                                <div class="p-3 bg-light rounded-3 border small text-muted mt-4">
+                                    <i class="bi bi-info-circle-fill text-danger me-1"></i> Lưu ý: Đăng ký xong hệ thống tự động xét duyệt, ông có thể sử dụng tài khoản này để yêu cầu gửi báo giá nhanh qua Zalo OA ngay lập tức.
+                                </div>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-danger w-100 fw-bold py-2 rounded-3 shadow-sm mt-4 mb-3">ĐĂNG KÝ ĐẠI LÝ CHÍNH THỨC</button>
+
+                        <div class="text-center">
+                            <span class="text-muted small">Đã có tài khoản?</span>
+                            <a href="#" class="text-danger small fw-bold text-decoration-none ms-1" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập tại đây</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Lấy ra tất cả các khối Toast thông báo
+            const toasts = document.querySelectorAll('.custom-toast');
+            toasts.forEach(function(toast) {
+                // Sau 4 giây (4000ms) tự động biến mất mượt mà
+                setTimeout(function() {
+                    toast.classList.remove('show');
+                    setTimeout(function() {
+                        toast.remove();
+                    }, 300); // Đợi hiệu ứng mờ kết thúc rồi xóa thẻ HTML
+                }, 4000);
+            });
+        });
+    </script>
 
     <div class="floating-action-group">
         <a href="#" id="backToTop" class="fab-btn fab-black" title="Lên đầu trang">
