@@ -82,6 +82,25 @@
                                         <span class="text-danger fw-bolder font-monospace">{{ $product->sku ?? 'NK-UPDATING' }}</span>
                                     </div>
                                 </div>
+                                <div class="mb-3 mt-auto rounded p-2 bg-white border border-secondary-subtle">
+                                    <div class="d-flex justify-content-between align-items-center mb-1">
+                                        <span class="text-muted small fw-semibold">Mã SP:</span>
+                                        <span class="text-danger fw-bolder font-monospace">{{ $product->sku ?? 'NK-UPDATING' }}</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center pt-1 border-top border-secondary border-opacity-10">
+                                        <span class="text-muted small fw-semibold">Giá sỉ:</span>
+                                        @auth
+                                            <span class="text-dark fw-bold">
+                                                {{ number_format($product->price ?? 0, 0, ',', '.') }}đ
+                                            </span>
+                                        @else
+                                            <a href="#" class="text-danger small fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                                <i class="bi bi-lock-fill small"></i> Đăng nhập xem giá
+                                            </a>
+                                        @endauth
+                                    </div>
+                                    </div>
                                 <a href="https://zalo.me/090xxxxxxx?text=Xin chào, tôi cần báo giá mã: {{ $product->sku ?? '' }}" target="_blank" class="btn btn-danger w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm btn-zalo">
                                     <i class="bi bi-chat-dots-fill"></i> BÁO GIÁ ZALO
                                 </a>

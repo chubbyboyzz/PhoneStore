@@ -39,7 +39,27 @@
 
                 <div class="bg-light rounded-4 p-4 mb-4 border">
                     <div class="row mb-3">
-                        <div class="col-4 text-muted fw-semibold">Mã sản phẩm (SKU):</div>
+                        <div class="product-price-box my-4 p-3 bg-light rounded-4 border border-secondary-subtle">
+                        <div class="d-flex align-items-center gap-2">
+                            <span class="text-muted fw-semibold">Giá phân phối sỉ:</span>
+
+                            @auth
+                                <span class="text-danger fw-bolder fs-3">
+                                    {{ number_format($product->price ?? 0, 0, ',', '.') }}đ
+                                </span>
+                                <span class="badge bg-success-subtle text-success border border-success border-opacity-25 ms-2 rounded-pill px-3">
+                                    <i class="bi bi-check-circle-fill me-1"></i> Giá đại lý chính thức
+                                </span>
+                            @else
+                                <div class="d-flex align-items-center gap-3">
+                                    <span class="text-secondary fw-bold fst-italic">🔒 Giá bảo mật</span>
+                                    <button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                        <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập để xem giá sỉ
+                                    </button>
+                                </div>
+                            @endauth
+                        </div>
+                    </div>
                         <div class="col-8 fw-bolder text-danger font-monospace fs-5">{{ $product->sku ?? 'Đang cập nhật' }}</div>
                     </div>
                     <hr class="text-secondary opacity-25">
