@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Http\Requests\Admin\StoreCategoryRequest;
 use Illuminate\Support\Str;
 use App\Http\Requests\Admin\UpdateCategoryRequest;
+use App\Models\Category;
+Use App\Models\Brand;
 
 class CategoryController extends Controller
 {
@@ -20,10 +22,17 @@ class CategoryController extends Controller
     }
 
 
-    public function index()
+
+    public function index(Request $request)
     {
-        // Gọi hàm phân trang đã tối ưu thuật toán đếm (withCount)
-        $categories = $this->categoryRepo->getPaginatedCategories(10);
+        $query = Category::query();
+
+        // Chỉ tìm theo tên danh mục
+        if ($request->filled('search')) {
+            $query->where('name', 'like', "%{$request->search}%");
+        }
+
+        $categories = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         return view('admin.categories.index', compact('categories'));
     }

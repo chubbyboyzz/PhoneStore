@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Repositories\Contracts\CustomerRepositoryInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Models\User;
 
 class CustomerController extends Controller
 {
@@ -16,9 +17,22 @@ class CustomerController extends Controller
         $this->customerRepo = $customerRepo;
     }
 
-    public function index()
+    public function index(Request $request)
     {
-        $customers = $this->customerRepo->getPaginated(15);
+        $query = User::query();
+
+        // Tìm theo Tên, Số điện thoại hoặc Email
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('phone', 'like', "%{$search}%")
+                  ->orWhere('email', 'like', "%{$search}%");
+            });
+        }
+
+        $customers = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+
         return view('admin.customers.index', compact('customers'));
     }
 

@@ -10,6 +10,8 @@ use App\Http\Requests\Admin\StoreProductRequest;
 use Illuminate\Support\Str;
 use App\Http\Requests\Admin\UpdateProductRequest;
 
+use App\Models\Product;
+
 
 use App\Models\Category;
 use App\Models\Brand;
@@ -116,10 +118,20 @@ class ProductController extends Controller
     /**
      * Hiển thị danh sách sản phẩm có phân trang
      */
-    public function index()
+    public function index(Request $request)
     {
-        // Gọi hàm từ Repository, mỗi trang 10 sản phẩm
-        $products = $this->productRepo->getPaginatedProducts(10);
+        $query = Product::query();
+
+        // Tìm theo tên hoặc mã SKU
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                  ->orWhere('sku', 'like', "%{$search}%");
+            });
+        }
+
+        $products = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
 
         return view('admin.products.index', compact('products'));
     }

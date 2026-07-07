@@ -14,6 +14,20 @@
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-0">
         <div class="table-responsive">
+            <div class="row mb-3">
+                <div class="col-md-6 col-lg-4">
+                    <form action="{{ route('admin.customers.index') }}" method="GET">
+                        <div class="input-group">
+                            <input type="text" name="search" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." value="{{ request('search') }}">
+                            <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Tìm</button>
+
+                            @if(request()->filled('search'))
+                                <a href="{{ route('admin.customers.index') }}" class="btn btn-outline-secondary" title="Xóa tìm kiếm"><i class="bi bi-x-lg"></i></a>
+                            @endif
+                        </div>
+                    </form>
+                </div>
+            </div>
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>

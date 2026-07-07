@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Models\User;
 use App\Http\Requests\Admin\StoreOrderRequest;
+use App\Models\Order;
 
 class OrderController extends Controller
 {
@@ -19,9 +20,21 @@ class OrderController extends Controller
     }
 
     // Luồng Read: Xem danh sách
-    public function index()
+    public function index(Request $request)
     {
-        $orders = $this->orderRepo->getPaginated(15);
+        $query = Order::query();
+
+        // Tìm theo Mã đơn hàng hoặc Số điện thoại người đặt
+        if ($request->filled('search')) {
+            $search = $request->search;
+            $query->where(function($q) use ($search) {
+                $q->where('order_code', 'like', "%{$search}%")
+                  ->orWhere('customer_phone', 'like', "%{$search}%");
+            });
+        }
+
+        $orders = $query->orderBy('id', 'desc')->paginate(10)->withQueryString();
+
         return view('admin.orders.index', compact('orders'));
     }
 
