@@ -32,5 +32,5 @@ interface OrderRepositoryInterface
      * @param int $newStatus Trạng thái mới cần chuyển đổi
      * @throws \Exception
      */
-    public function updateStatus(int $id, int $newStatus): bool;
+    public function updateStatus(int $id, string $newStatus): bool;
 }

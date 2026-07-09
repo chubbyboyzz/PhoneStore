@@ -84,6 +84,19 @@
                 </ul>
 
                 <ul class="navbar-nav align-items-center pb-2 pb-lg-0">
+                    @auth
+                        <li class="nav-item me-lg-3 mt-2 mt-lg-0">
+                            <a href="{{ route('frontend.cart.index') }}" class="btn btn-outline-light position-relative border-0" style="padding: 8px 12px;" title="Xem giỏ hàng">
+                                <i class="bi bi-cart3 fs-5"></i>
+                                @php $cartCount = session('cart') ? count(session('cart')) : 0; @endphp
+                                @if($cartCount > 0)
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">
+                                        {{ $cartCount }}
+                                    </span>
+                                @endif
+                            </a>
+                        </li>
+                    @endauth
                     @guest
                         <li class="nav-item ms-lg-3 d-flex align-items-center mt-2 mt-lg-0">
                             <button type="button" class="btn btn-danger fw-bold shadow-sm rounded-pill px-4 py-2 text-nowrap" data-bs-toggle="modal" data-bs-target="#loginModal">

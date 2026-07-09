@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\CustomerController; // Đã thêm Import cho Cust
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AuthController as FrontendAuthController;
 use App\Http\Controllers\Frontend\AccountController;
+use App\Http\Controllers\Frontend\CartController;
 
 
 // ==========================================
@@ -32,7 +33,11 @@ Route::middleware('auth')->group(function () {
     // Trang Thông tin cá nhân
     Route::get('/tai-khoan/thong-tin', [AccountController::class, 'profile'])->name('frontend.account.profile');
     Route::put('/tai-khoan/thong-tin', [AccountController::class, 'updateProfile'])->name('frontend.account.update_profile');
-    // Route::get('/tai-khoan/don-hang/{id}', [AccountController::class, 'orderDetail'])->name('frontend.account.order_detail');
+    // role đơn hàng
+    Route::get('/gio-hang', [CartController::class, 'index'])->name('frontend.cart.index');
+    Route::post('/gio-hang/them/{id}', [CartController::class, 'add'])->name('frontend.cart.add');
+    Route::get('/gio-hang/xoa/{id}', [CartController::class, 'remove'])->name('frontend.cart.remove');
+    Route::post('/gio-hang/xac-nhan', [CartController::class, 'checkout'])->name('frontend.cart.checkout');
 });
 
 // ==========================================
@@ -66,6 +71,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::post('/orders', [OrderController::class, 'store'])->name('orders.store');
         Route::get('/orders/{id}', [OrderController::class, 'show'])->name('orders.show');
         Route::put('/orders/{id}/status', [OrderController::class, 'updateStatus'])->name('orders.updateStatus');
+        Route::put('/orders/{id}/update-status', [OrderController::class, 'updateStatus'])->name('admin.orders.updateStatus');
 
         // Quản lý Khách hàng sỉ (Customers) - Đã SỬA LỖI LỒNG PREFIX
         Route::put('/customers/{id}/toggle', [CustomerController::class, 'toggle'])->name('customers.toggle');

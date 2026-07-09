@@ -5,10 +5,8 @@
 @section('content')
 <div class="d-flex justify-content-between align-items-center mb-4">
     <h3 class="fw-bold text-dark"><i class="bi bi-cart-check me-2 text-danger"></i> Quản lý Đơn hàng</h3>
-    <a href="{{ route('admin.orders.create') }}" class="btn btn-danger fw-bold rounded-3 shadow-sm px-4">
-        <i class="bi bi-plus-circle-fill me-2"></i> TẠO ĐƠN HÀNG MỚI
-    </a>
-</div>
+    </div>
+
 @if (session('success'))
     <div class="alert alert-success border-0 shadow-sm rounded-4 mb-4">{{ session('success') }}</div>
 @endif
@@ -16,17 +14,15 @@
     <div class="alert alert-danger border-0 shadow-sm rounded-4 mb-4">{{ session('error') }}</div>
 @endif
 
-
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <div class="row mb-3">
+            <div class="row p-3 mb-0">
                 <div class="col-md-6 col-lg-4">
                     <form action="{{ route('admin.orders.index') }}" method="GET">
                         <div class="input-group">
-                            <input type="text" name="search" class="form-control" placeholder="Nhập từ khóa tìm kiếm..." value="{{ request('search') }}">
+                            <input type="text" name="search" class="form-control" placeholder="Nhập mã ĐH hoặc SĐT..." value="{{ request('search') }}">
                             <button class="btn btn-primary" type="submit"><i class="bi bi-search"></i> Tìm</button>
-
                             @if(request()->filled('search'))
                                 <a href="{{ route('admin.orders.index') }}" class="btn btn-outline-secondary" title="Xóa tìm kiếm"><i class="bi bi-x-lg"></i></a>
                             @endif
@@ -48,21 +44,19 @@
                 <tbody>
                     @forelse($orders as $order)
                     <tr>
-                        <td class="ps-4 fw-bold">#ORD-{{ str_pad($order->id, 5, '0', STR_PAD_LEFT) }}</td>
+                        <td class="ps-4 fw-bold text-danger">{{ $order->order_code }}</td>
                         <td>
-                            <div class="fw-semibold text-dark">{{ $order->user->name ?? 'Khách lẻ' }}</div>
-                            <small class="text-muted">{{ $order->user->phone ?? '' }}</small>
+                            <div class="fw-semibold text-dark">{{ $order->customer_name ?? 'Khách lẻ' }}</div>
+                            <small class="text-muted">{{ $order->customer_phone ?? '' }}</small>
                         </td>
                         <td class="text-secondary">{{ $order->created_at->format('d/m/Y H:i') }}</td>
-                        <td class="text-end fw-bold text-danger">{{ number_format($order->total_price) }}đ</td>
+                        <td class="text-end fw-bold">{{ number_format($order->total_amount, 0, ',', '.') }}đ</td>
                         <td class="text-center">
-                            <!-- State Machine Mapping UI -->
                             @switch($order->status)
-                                @case(1) <span class="badge bg-secondary rounded-pill px-3">Chờ xác nhận</span> @break
-                                @case(2) <span class="badge bg-primary rounded-pill px-3">Đang xử lý</span> @break
-                                @case(3) <span class="badge bg-info text-dark rounded-pill px-3">Đang giao</span> @break
-                                @case(4) <span class="badge bg-success rounded-pill px-3">Hoàn thành</span> @break
-                                @case(5) <span class="badge bg-danger rounded-pill px-3">Đã hủy</span> @break
+                                @case('pending') <span class="badge bg-warning text-dark rounded-pill px-3">Chờ duyệt</span> @break
+                                @case('completed') <span class="badge bg-success rounded-pill px-3">Hoàn thành</span> @break
+                                @case('canceled') <span class="badge bg-danger rounded-pill px-3">Đã hủy</span> @break
+                                @default <span class="badge bg-secondary rounded-pill px-3">{{ $order->status }}</span>
                             @endswitch
                         </td>
                         <td class="text-center pe-4">

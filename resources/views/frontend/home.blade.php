@@ -96,10 +96,20 @@
                                         @endauth
                                     </div>
                                 </div>
+                                <div class="d-flex flex-column gap-2">
+                                    @auth
+                                        <form action="{{ route('frontend.cart.add', $product->id) }}" method="POST" class="m-0">
+                                            @csrf
+                                            <button type="submit" class="btn btn-dark w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm" style="transition: all 0.2s;">
+                                                <i class="bi bi-cart-plus-fill"></i> THÊM GIỎ HÀNG
+                                            </button>
+                                        </form>
+                                    @endauth
 
-                                <a href="https://zalo.me/0862542394?text={{ urlencode('Xin chào, tôi cần báo giá mã: ' . ($product->sku ?? '')) }}" target="_blank" class="btn btn-danger w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm btn-zalo">
-                                    <i class="bi bi-chat-dots-fill"></i> BÁO GIÁ ZALO
-                                </a>
+                                    <a href="https://zalo.me/0862542394?text={{ urlencode('Xin chào, tôi cần báo giá mã: ' . ($product->sku ?? '')) }}" target="_blank" class="btn btn-danger w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm btn-zalo">
+                                        <i class="bi bi-chat-dots-fill"></i> BÁO GIÁ ZALO
+                                    </a>
+                                </div>
                             </div>
                         </div>
                     </div>

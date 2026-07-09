@@ -92,6 +92,14 @@
                 </div>
 
                 <div class="d-flex flex-column gap-3 mb-5">
+                    @auth
+                    <form action="{{ route('frontend.cart.add', $product->id) }}" method="POST">
+                        @csrf
+                        <button type="submit" class="btn btn-dark btn-lg fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2 py-3 rounded-3 w-100 mb-2">
+                            <i class="bi bi-cart-plus-fill fs-4"></i> THÊM VÀO GIỎ HÀNG
+                        </button>
+                    </form>
+                    @endauth
                     <a href="https://zalo.me/0862.542.394?text=Xin chào, tôi cần báo giá sỉ cho mã SP: {{ $product->sku }}"
                        target="_blank"
                        class="btn btn-danger btn-lg fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2 py-3 rounded-3"

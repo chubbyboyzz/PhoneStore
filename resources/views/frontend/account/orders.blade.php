@@ -56,11 +56,11 @@
                                     {{ number_format($order->total_amount ?? 0, 0, ',', '.') }}đ
                                 </td>
                                 <td class="text-center">
-                                    @if($order->status == 0)
+                                    @if($order->status == 'pending')
                                         <span class="badge bg-warning text-dark rounded-pill">Chờ duyệt</span>
-                                    @elseif($order->status == 1)
+                                    @elseif($order->status == 'in_progress')
                                         <span class="badge bg-primary rounded-pill">Đang giao</span>
-                                    @elseif($order->status == 2)
+                                    @elseif($order->status == 'completed')
                                         <span class="badge bg-success rounded-pill">Hoàn thành</span>
                                     @else
                                         <span class="badge bg-secondary rounded-pill">Đã hủy</span>
