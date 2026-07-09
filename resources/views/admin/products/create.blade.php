@@ -10,12 +10,10 @@
     </a>
 </div>
 
-<!-- Form bắt buộc phải có enctype="multipart/form-data" để up ảnh -->
 <form action="{{ route('admin.products.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
 
     <div class="row g-4">
-        <!-- Cột Trái: Thông tin chính -->
         <div class="col-md-8">
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4">
@@ -33,6 +31,12 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label fw-semibold">Bộ sưu tập ảnh (Gallery)</label>
+                        <input type="file" name="gallery[]" class="form-control" multiple accept="image/png, image/jpeg, image/jpg, image/webp">
+                        <small class="text-muted">Có thể chọn nhiều ảnh cùng lúc để làm ảnh review chi tiết (Giữ Ctrl để chọn nhiều).</small>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label fw-semibold">Mô tả chi tiết</label>
                         <textarea name="description" class="form-control" rows="5" placeholder="Nhập thông số kỹ thuật, bài viết..."></textarea>
                     </div>
@@ -40,7 +44,6 @@
             </div>
         </div>
 
-        <!-- Cột Phải: Phân loại & Cấu hình -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4">

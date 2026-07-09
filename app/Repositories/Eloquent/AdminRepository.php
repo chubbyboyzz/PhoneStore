@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Eloquent;
 
-use App\Models\Admin; // Giả định ông đã có Model Admin từ lúc làm Multi-Auth
+use App\Models\Admin;
 use App\Repositories\Contracts\AdminRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
 

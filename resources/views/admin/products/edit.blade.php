@@ -12,10 +12,7 @@
 
 <form action="{{ route('admin.products.update', $product->id) }}" method="POST" enctype="multipart/form-data">
     @csrf
-    @method('PUT') <!-- Định tuyến giao thức HTTP chuẩn PUT -->
-
-    <div class="row g-4">
-        <!-- Khu vực Dữ liệu Lõi -->
+    @method('PUT') <div class="row g-4">
         <div class="col-md-8">
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4">
@@ -36,6 +33,19 @@
                     </div>
 
                     <div class="mb-3">
+                        <label class="form-label fw-semibold">Bộ sưu tập ảnh (Gallery)</label>
+                        @if(!empty($product->gallery) && is_array($product->gallery))
+                            <div class="d-flex flex-wrap gap-2 mb-2 p-2 bg-light rounded border border-secondary-subtle">
+                                @foreach($product->gallery as $img)
+                                    <img src="{{ $img }}" class="img-thumbnail shadow-sm rounded-3" style="width: 80px; height: 80px; object-fit: cover;">
+                                @endforeach
+                            </div>
+                        @endif
+                        <input type="file" name="gallery[]" class="form-control" multiple accept="image/png, image/jpeg, image/jpg, image/webp">
+                        <small class="text-muted text-danger fw-medium d-block mt-1">Lưu ý: Up ảnh mới sẽ xóa bộ ảnh cũ và ghi đè bằng bộ mới này.</small>
+                    </div>
+
+                    <div class="mb-3">
                         <label class="form-label fw-semibold">Mô tả chi tiết</label>
                         <textarea name="description" class="form-control" rows="5">{{ old('description', $product->description) }}</textarea>
                     </div>
@@ -43,7 +53,6 @@
             </div>
         </div>
 
-        <!-- Khu vực Phân loại & Ràng buộc -->
         <div class="col-md-4">
             <div class="card border-0 shadow-sm rounded-4 mb-4">
                 <div class="card-body p-4">

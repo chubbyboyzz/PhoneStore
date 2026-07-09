@@ -11,8 +11,6 @@ use Illuminate\Support\Str;
 use App\Http\Requests\Admin\UpdateProductRequest;
 
 use App\Models\Product;
-
-
 use App\Models\Category;
 use App\Models\Brand;
 
@@ -31,51 +29,52 @@ class ProductController extends Controller
      */
     public function create()
     {
-        // Truy xuất dữ liệu cho Dropdown List (chỉ lấy các trường cần thiết để tối ưu RAM)
         $categories = Category::orderBy('sort_order', 'asc')->get(['id', 'name']);
         $brands = Brand::orderBy('name', 'asc')->get(['id', 'name']);
 
-        // Trả về View kèm theo DTO (Data Transfer Object)
         return view('admin.products.create', compact('categories', 'brands'));
     }
 
     public function destroy(int $id)
     {
-        // 1. Dùng Repository để lấy thực thể Product (tự động văng 404 nếu không tồn tại)
+        // 1. Dùng Repository để lấy thực thể Product
         $product = $this->productRepo->findById($id);
 
-        // 2. Thuật toán dọn dẹp bộ nhớ (Xóa ảnh vật lý trên đĩa)
-        // Kiểm tra xem ảnh có tồn tại và không phải là link HTTP/URL ngoài
+        // 2. Thuật toán dọn dẹp bộ nhớ (Xóa ảnh Thumbnail)
         if ($product->thumbnail && !str_contains($product->thumbnail, 'http')) {
-
-            // Loại bỏ prefix '/storage/' để lấy đường dẫn thực tế tương đối trong disk 'public'
-            // Ví dụ từ: /storage/products/abc.png -> products/abc.png
             $imagePath = str_replace('/storage/', '', $product->thumbnail);
-
-            // Kiểm tra an toàn: Nếu file vật lý thực sự tồn tại trên ổ cứng thì mới ra lệnh xóa
             if (Storage::disk('public')->exists($imagePath)) {
                 Storage::disk('public')->delete($imagePath);
+            }
+        }
+
+        // THÊM MỚI: Thuật toán dọn dẹp bộ nhớ (Xóa ảnh trong Gallery)
+        if (!empty($product->gallery) && is_array($product->gallery)) {
+            foreach ($product->gallery as $img) {
+                if ($img && !str_contains($img, 'http')) {
+                    $imgPath = str_replace('/storage/', '', $img);
+                    if (Storage::disk('public')->exists($imgPath)) {
+                        Storage::disk('public')->delete($imgPath);
+                    }
+                }
             }
         }
 
         // 3. Ra lệnh cho Repository xóa bản ghi trong CSDL
         $this->productRepo->delete($id);
 
-        // 4. Trả về giao diện kèm tín hiệu Flash Session
+        // 4. Trả về giao diện
         return redirect()->route('admin.products.index')
                          ->with('success', 'Hệ thống đã xóa sản phẩm và giải phóng ổ cứng thành công!');
     }
-
 
     /**
      * Giai đoạn 1: Ánh xạ dữ liệu lên Form (Data Binding)
      */
     public function edit(int $id)
     {
-        // Sử dụng Repository để nạp thực thể
         $product = $this->productRepo->findById($id);
 
-        // Truy xuất danh mục và thương hiệu (DTO cho Dropdown)
         $categories = Category::orderBy('sort_order', 'asc')->get(['id', 'name']);
         $brands = Brand::orderBy('name', 'asc')->get(['id', 'name']);
 
@@ -93,19 +92,39 @@ class ProductController extends Controller
         $data['slug'] = Str::slug($data['name']);
         $data['is_active'] = $request->has('is_active') ? 1 : 0;
 
-        // Xử lý luồng I/O Tệp tin
+        // Xử lý luồng I/O Tệp tin (Thumbnail)
         if ($request->hasFile('thumbnail')) {
-            // 1. Dọn dẹp tệp tin cũ khỏi ổ đĩa vật lý
             if ($product->thumbnail && !str_contains($product->thumbnail, 'http')) {
                 $oldImagePath = str_replace('/storage/', '', $product->thumbnail);
                 if (Storage::disk('public')->exists($oldImagePath)) {
                     Storage::disk('public')->delete($oldImagePath);
                 }
             }
-
-            // 2. Nạp tệp tin mới và lấy định tuyến tĩnh
             $path = $request->file('thumbnail')->store('products', 'public');
             $data['thumbnail'] = '/storage/' . $path;
+        }
+
+        // THÊM MỚI: Xử lý I/O Tệp tin (Gallery)
+        if ($request->hasFile('gallery')) {
+            // Xóa file vật lý của gallery cũ
+            if (!empty($product->gallery) && is_array($product->gallery)) {
+                foreach ($product->gallery as $oldImage) {
+                    if ($oldImage && !str_contains($oldImage, 'http')) {
+                        $oldImagePath = str_replace('/storage/', '', $oldImage);
+                        if (Storage::disk('public')->exists($oldImagePath)) {
+                            Storage::disk('public')->delete($oldImagePath);
+                        }
+                    }
+                }
+            }
+
+            // Lưu mảng ảnh mới
+            $galleryPaths = [];
+            foreach ($request->file('gallery') as $file) {
+                $path = $file->store('products/gallery', 'public');
+                $galleryPaths[] = '/storage/' . $path; // Đồng bộ quy tắc thêm prefix /storage/ của ông
+            }
+            $data['gallery'] = $galleryPaths;
         }
 
         // Bàn giao cho tầng Data Access (Repository) thực thi cập nhật
@@ -122,7 +141,6 @@ class ProductController extends Controller
     {
         $query = Product::query();
 
-        // Tìm theo tên hoặc mã SKU
         if ($request->filled('search')) {
             $search = $request->search;
             $query->where(function($q) use ($search) {
@@ -139,35 +157,35 @@ class ProductController extends Controller
     /**
      * 2. HÀM STORE ĐÓN REQUEST ĐÃ QUA KIỂM DUYỆT
      */
-
     public function store(StoreProductRequest $request)
     {
-       // Lấy toàn bộ dữ liệu đã pass qua mảng rules()
         $data = $request->validated();
 
-        // Thuật toán sinh tự động các trường không có trong Form
-        $data['slug'] = Str::slug($data['name']); // Tạo URL thân thiện (vd: iphone-15-pro)
-        $data['sku'] = 'SP' . strtoupper(Str::random(6)); // Mã SKU ngẫu nhiên (vd: SP8F2A1)
-
-        // Xử lý Checkbox (Nếu không tích thì form sẽ không gửi lên, mặc định là null)
+        $data['slug'] = Str::slug($data['name']);
+        $data['sku'] = 'SP' . strtoupper(Str::random(6));
         $data['is_active'] = $request->has('is_active') ? 1 : 0;
 
-
-       if ($request->hasFile('thumbnail')) {
-            // Lưu file vào thư mục storage/app/public/products
+        // Ảnh chính
+        if ($request->hasFile('thumbnail')) {
             $path = $request->file('thumbnail')->store('products', 'public');
-
-            // Format lại đường dẫn để View có thể đọc được qua thẻ <img>
             $data['thumbnail'] = '/storage/' . $path;
         } else {
-            // Nếu không up ảnh, giữ nguyên ảnh mặc định
             $data['thumbnail'] = 'https://via.placeholder.com/150';
+        }
+
+        // THÊM MỚI: Ảnh bộ sưu tập
+        if ($request->hasFile('gallery')) {
+            $galleryPaths = [];
+            foreach ($request->file('gallery') as $file) {
+                $path = $file->store('products/gallery', 'public');
+                $galleryPaths[] = '/storage/' . $path;
+            }
+            $data['gallery'] = $galleryPaths;
         }
 
         // Gọi Repository để ghi vào CSDL
         $this->productRepo->create($data);
 
-        // Chuyển hướng về trang danh sách kèm thông báo Flash Session
         return redirect()->route('admin.products.index')
                          ->with('success', 'Đã thêm sản phẩm mới thành công!');
     }

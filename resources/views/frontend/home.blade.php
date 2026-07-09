@@ -67,7 +67,7 @@
                         <div class="card h-100 border-0 shadow-sm product-card">
                             <div class="position-relative p-3 bg-white text-center rounded-top border-bottom" style="height: 220px;">
                                 <a href="{{ route('product.detail', $product->id) }}">
-                                    <img src="{{ asset('storage/' . $product->thumbnail) }}" class="img-fluid h-100 object-fit-contain" alt="{{ $product->name }}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+                                    <img src="{{ asset($product->thumbnail) }}" class="img-fluid h-100 object-fit-contain" alt="{{ $product->name }}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
                                 </a>
                             </div>
                             <div class="card-body d-flex flex-column bg-light bg-opacity-50">
@@ -97,7 +97,7 @@
                                     </div>
                                 </div>
 
-                                <a href="https://zalo.me/090xxxxxxx?text=Xin chào, tôi cần báo giá mã: {{ $product->sku ?? '' }}" target="_blank" class="btn btn-danger w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm btn-zalo">
+                                <a href="https://zalo.me/0862542394?text={{ urlencode('Xin chào, tôi cần báo giá mã: ' . ($product->sku ?? '')) }}" target="_blank" class="btn btn-danger w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm btn-zalo">
                                     <i class="bi bi-chat-dots-fill"></i> BÁO GIÁ ZALO
                                 </a>
                             </div>

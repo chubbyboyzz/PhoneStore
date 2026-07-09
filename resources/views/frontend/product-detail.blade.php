@@ -23,7 +23,7 @@
 
                 <div class="card border-0 shadow-sm rounded-4 mb-3 d-flex justify-content-center align-items-center overflow-hidden" style="height: 400px; background-color: #fff;">
                     <img id="mainProductImage"
-                         src="{{ asset('storage/' . $product->thumbnail) }}"
+                         src="{{ asset($product->thumbnail) }}"
                          alt="{{ $product->name }}"
                          class="img-fluid h-100 object-fit-contain p-3"
                          onerror="this.src='https://via.placeholder.com/400x400?text=No+Image'">
@@ -31,14 +31,14 @@
 
                 <div class="d-flex gap-2 overflow-x-auto pb-2 thumbnail-container" style="scrollbar-width: thin;">
 
-                    <div class="thumbnail-item border border-2 border-danger rounded-3 overflow-hidden flex-shrink-0" style="width: 80px; height: 80px; cursor: pointer;" onclick="changeMainImage(this, '{{ asset('storage/' . $product->thumbnail) }}')">
-                        <img src="{{ asset('storage/' . $product->thumbnail) }}" class="w-100 h-100 object-fit-contain p-1 bg-white" onerror="this.src='https://via.placeholder.com/80x80?text=No+Img'">
+                    <div class="thumbnail-item border border-2 border-danger rounded-3 overflow-hidden flex-shrink-0" style="width: 80px; height: 80px; cursor: pointer;" onclick="changeMainImage(this, '{{ asset($product->thumbnail) }}')">
+                        <img src="{{ asset($product->thumbnail) }}" class="w-100 h-100 object-fit-contain p-1 bg-white" onerror="this.src='https://via.placeholder.com/80x80?text=No+Img'">
                     </div>
 
                     @if(!empty($product->gallery) && is_array($product->gallery))
                         @foreach($product->gallery as $imagePath)
-                            <div class="thumbnail-item border border-1 rounded-3 overflow-hidden flex-shrink-0 opacity-75" style="width: 80px; height: 80px; cursor: pointer;" onclick="changeMainImage(this, '{{ asset('storage/' . $imagePath) }}')">
-                                <img src="{{ asset('storage/' . $imagePath) }}" class="w-100 h-100 object-fit-contain p-1 bg-white" onerror="this.src='https://via.placeholder.com/80x80?text=No+Img'">
+                            <div class="thumbnail-item border border-1 rounded-3 overflow-hidden flex-shrink-0 opacity-75" style="width: 80px; height: 80px; cursor: pointer;" onclick="changeMainImage(this, '{{ asset($imagePath) }}')">
+                                <img src="{{ asset($imagePath) }}" class="w-100 h-100 object-fit-contain p-1 bg-white" onerror="this.src='https://via.placeholder.com/80x80?text=No+Img'">
                             </div>
                         @endforeach
                     @endif
@@ -92,13 +92,13 @@
                 </div>
 
                 <div class="d-flex flex-column gap-3 mb-5">
-                    <a href="https://zalo.me/090xxxxxxx?text=Xin chào, tôi cần báo giá sỉ cho mã SP: {{ $product->sku }}"
+                    <a href="https://zalo.me/0862.542.394?text=Xin chào, tôi cần báo giá sỉ cho mã SP: {{ $product->sku }}"
                        target="_blank"
                        class="btn btn-danger btn-lg fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2 py-3 rounded-3"
                        style="transition: all 0.3s;">
                         <i class="bi bi-chat-dots-fill fs-4"></i> NHẬN BÁO GIÁ SỈ QUA ZALO
                     </a>
-                    <a href="tel:090xxxxxxx" class="btn btn-outline-dark btn-lg fw-bold d-flex justify-content-center align-items-center gap-2 py-3 rounded-3">
+                    <a href="tel:0862.542.394" class="btn btn-outline-dark btn-lg fw-bold d-flex justify-content-center align-items-center gap-2 py-3 rounded-3">
                         <i class="bi bi-telephone-fill fs-5"></i> GỌI HOTLINE TƯ VẤN NGAY
                     </a>
                 </div>

@@ -23,7 +23,6 @@ class CustomerRepository implements CustomerRepositoryInterface
     public function toggleStatus(int $id): bool
     {
         $customer = $this->model->findOrFail($id);
-        // Thuật toán Đảo bit thông minh: Đang 1 thành 0, đang 0 thành 1
         $customer->is_active = !$customer->is_active;
         return $customer->save();
     }

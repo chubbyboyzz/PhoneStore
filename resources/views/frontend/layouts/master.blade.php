@@ -40,7 +40,7 @@
             </a>
             <div class="text-end">
                 <div class="text-muted small fw-bold">HOTLINE HỖ TRỢ KHÁCH SỈ</div>
-                <div class="text-danger fw-bolder fs-4"><i class="bi bi-telephone-fill me-1"></i> 090.xxx.xxxx</div>
+                <div class="text-danger fw-bolder fs-4"><i class="bi bi-telephone-fill me-1"></i> 0862.542.394</div>
             </div>
         </div>
     </div>
@@ -289,15 +289,15 @@
 
     <div class="floating-contact-wrapper position-fixed" style="bottom: 30px; right: 30px; z-index: 9999; display: flex; flex-direction: column; gap: 12px; align-items: flex-end;">
 
-        <a href="https://m.me/yourpage" target="_blank" class="btn rounded-pill shadow-lg d-flex align-items-center justify-content-center fw-bold text-white px-4 py-2 floating-btn" style="background-color: #0084FF; border: none;">
+        <a href="https://web.facebook.com/NKMobile25" target="_blank" class="btn rounded-pill shadow-lg d-flex align-items-center justify-content-center fw-bold text-white px-4 py-2 floating-btn" style="background-color: #0084FF; border: none;">
             Facebook <i class="bi bi-messenger ms-2"></i>
         </a>
 
-        <a href="https://zalo.me/yourzalo" target="_blank" class="btn rounded-pill shadow-lg d-flex align-items-center justify-content-center fw-bold text-white px-4 py-2 floating-btn" style="background-color: #0068FF; border: none;">
+        <a href="https://zalo.me/0862.542.394" target="_blank" class="btn rounded-pill shadow-lg d-flex align-items-center justify-content-center fw-bold text-white px-4 py-2 floating-btn" style="background-color: #0068FF; border: none;">
             Zalo OA <i class="bi bi-chat-dots-fill ms-2"></i>
         </a>
 
-        <a href="tel:090xxxxxxx" class="btn btn-danger rounded-pill shadow-lg d-flex align-items-center justify-content-center fw-bold text-white px-4 py-2 floating-btn pulse-hotline">
+        <a href="tel:0862542394" class="btn btn-danger rounded-pill shadow-lg d-flex align-items-center justify-content-center fw-bold text-white px-4 py-2 floating-btn pulse-hotline">
             Liên hệ <i class="bi bi-headset ms-2"></i>
         </a>
 
