@@ -11,7 +11,7 @@ class Product extends Model
     protected $fillable = [
         'category_id', 'brand_id', 'name', 'slug', 'sku', 'price',
         'sale_price', 'stock_quantity', 'description', 'thumbnail',
-        'is_featured', 'views', 'is_active'
+        'is_featured', 'views', 'is_active', 'gallery'
     ];
 
     protected $casts = [
@@ -19,6 +19,7 @@ class Product extends Model
         'sale_price' => 'decimal:2',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
+        'gallery' => 'array', // Lưu trữ dưới dạng mảng JSON
     ];
 
     // Quan hệ N-1: Nhiều Sản phẩm thuộc 1 Danh mục/Thương hiệu

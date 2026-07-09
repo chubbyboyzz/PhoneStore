@@ -12,28 +12,33 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('products', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('category_id')->constrained('categories')->onDelete('restrict');
-        $table->foreignId('brand_id')->constrained('brands')->onDelete('restrict');
+            $table->id();
+            $table->foreignId('category_id')->constrained('categories')->onDelete('restrict');
+            $table->foreignId('brand_id')->constrained('brands')->onDelete('restrict');
 
-        $table->string('name');
-        $table->string('slug')->unique();
-        $table->string('sku', 50)->unique();
-        $table->decimal('price', 12, 2);
-        $table->decimal('sale_price', 12, 2)->nullable();
-        $table->integer('stock_quantity')->default(0);
-        $table->longText('description')->nullable();
-        $table->string('thumbnail');
+            $table->string('name');
+            $table->string('slug')->unique();
+            $table->string('sku', 50)->unique();
+            $table->decimal('price', 15, 2)->default(0);
+            $table->decimal('sale_price', 12, 2)->nullable();
+            $table->integer('stock_quantity')->default(0);
+            $table->longText('description')->nullable();
 
-        // Hỗ trợ mảng SEO & Hiển thị
-        $table->boolean('is_featured')->default(false); // Sản phẩm nổi bật
-        $table->integer('views')->default(0); // Lượt xem
-        $table->boolean('is_active')->default(true);
-        $table->timestamps();
+            // Ảnh đại diện chính (Hiển thị ở trang chủ)
+            $table->string('thumbnail');
 
-        // Đánh Index tối ưu tốc độ Filter
-        $table->index(['category_id', 'brand_id', 'is_active']);
-    });
+            // Bộ sưu tập ảnh review (Lưu dưới dạng mảng JSON)
+            $table->json('gallery')->nullable();
+
+            // Hỗ trợ mảng SEO & Hiển thị
+            $table->boolean('is_featured')->default(false); // Sản phẩm nổi bật
+            $table->integer('views')->default(0); // Lượt xem
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+
+            // Đánh Index tối ưu tốc độ Filter
+            $table->index(['category_id', 'brand_id', 'is_active']);
+        });
     }
 
     /**

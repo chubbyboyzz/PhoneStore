@@ -67,31 +67,26 @@
                         <div class="card h-100 border-0 shadow-sm product-card">
                             <div class="position-relative p-3 bg-white text-center rounded-top border-bottom" style="height: 220px;">
                                 <a href="{{ route('product.detail', $product->id) }}">
-                                    <img src="{{ asset('storage/' . $product->image) }}" class="img-fluid h-100 object-fit-contain" alt="{{ $product->name }}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
+                                    <img src="{{ asset('storage/' . $product->thumbnail) }}" class="img-fluid h-100 object-fit-contain" alt="{{ $product->name }}" onerror="this.src='https://via.placeholder.com/200?text=No+Image'">
                                 </a>
                             </div>
                             <div class="card-body d-flex flex-column bg-light bg-opacity-50">
                                 <a href="{{ route('product.detail', $product->id) }}" class="text-decoration-none">
-                                    <h6 class="card-title fw-bold text-dark text-truncate mb-2 hover-red" title="{{ $product->name }}">
+                                    <h6 class="card-title fw-bold text-dark text-truncate mb-3 hover-red" title="{{ $product->name }}">
                                         {{ $product->name ?? 'Đang cập nhật tên' }}
                                     </h6>
                                 </a>
-                                <div class="mb-4 mt-auto rounded p-2 bg-white border border-secondary-subtle">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="text-muted small fw-semibold">Mã SP:</span>
-                                        <span class="text-danger fw-bolder font-monospace">{{ $product->sku ?? 'NK-UPDATING' }}</span>
-                                    </div>
-                                </div>
-                                <div class="mb-3 mt-auto rounded p-2 bg-white border border-secondary-subtle">
-                                    <div class="d-flex justify-content-between align-items-center mb-1">
+
+                                <div class="mb-3 mt-auto rounded p-2 bg-white border border-secondary-subtle shadow-sm">
+                                    <div class="d-flex justify-content-between align-items-center mb-2">
                                         <span class="text-muted small fw-semibold">Mã SP:</span>
                                         <span class="text-danger fw-bolder font-monospace">{{ $product->sku ?? 'NK-UPDATING' }}</span>
                                     </div>
 
-                                    <div class="d-flex justify-content-between align-items-center pt-1 border-top border-secondary border-opacity-10">
+                                    <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
                                         <span class="text-muted small fw-semibold">Giá sỉ:</span>
                                         @auth
-                                            <span class="text-dark fw-bold">
+                                            <span class="text-dark fw-bold fs-6">
                                                 {{ number_format($product->price ?? 0, 0, ',', '.') }}đ
                                             </span>
                                         @else
@@ -100,7 +95,8 @@
                                             </a>
                                         @endauth
                                     </div>
-                                    </div>
+                                </div>
+
                                 <a href="https://zalo.me/090xxxxxxx?text=Xin chào, tôi cần báo giá mã: {{ $product->sku ?? '' }}" target="_blank" class="btn btn-danger w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm btn-zalo">
                                     <i class="bi bi-chat-dots-fill"></i> BÁO GIÁ ZALO
                                 </a>
