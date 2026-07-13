@@ -7,6 +7,8 @@ use Illuminate\Pagination\LengthAwarePaginator;
 
 interface OrderRepositoryInterface
 {
+
+    public function countPending(): int;
     /**
      * Truy xuất danh sách đơn hàng có phân trang
      * @param int $perPage Số lượng bản ghi trên mỗi trang
@@ -33,4 +35,6 @@ interface OrderRepositoryInterface
      * @throws \Exception
      */
     public function updateStatus(int $id, string $newStatus): bool;
+
+
 }

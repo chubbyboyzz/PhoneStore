@@ -85,4 +85,11 @@ class ProductRepository implements ProductRepositoryInterface
                            ->limit($limit)
                            ->get(['id', 'name', 'stock_quantity']); // Lấy ID để có thể click xem chi tiết
     }
+
+    public function getLowStockProducts(int $threshold = 5)
+    {
+        return $this->model->where('stock_quantity', '<=', $threshold)
+                           ->orderBy('stock_quantity', 'asc')
+                           ->get();
+    }
 }

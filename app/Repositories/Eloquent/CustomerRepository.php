@@ -9,6 +9,11 @@ class CustomerRepository implements CustomerRepositoryInterface
 {
     protected User $model;
 
+    public function countAll(): int
+    {
+        return $this->model->count();
+    }
+
     public function __construct(User $model)
     {
         $this->model = $model;

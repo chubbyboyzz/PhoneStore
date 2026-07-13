@@ -11,6 +11,11 @@ class OrderRepository implements OrderRepositoryInterface
 {
     protected Order $model;
 
+    public function countPending(): int
+    {
+        return $this->model->where('status', 'pending')->count();
+    }
+
     public function __construct(Order $model)
     {
         $this->model = $model;

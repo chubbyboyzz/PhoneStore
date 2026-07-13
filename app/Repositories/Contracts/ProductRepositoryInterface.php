@@ -40,4 +40,6 @@ interface ProductRepositoryInterface
     public function delete(int $id);
 
     public function countAll(): int;
+
+    public function getLowStockProducts(int $threshold = 5);
 }
