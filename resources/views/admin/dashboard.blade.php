@@ -17,7 +17,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="mb-1 text-white-50 fw-semibold text-uppercase">Đơn hàng mới</p>
-                        <h2 class="fw-bold mb-0">150</h2>
+                        <h2 class="fw-bold mb-0">{{ number_format($newOrdersCount ?? 0) }}</h2>
                     </div>
                     <i class="bi bi-cart-plus fs-1 opacity-50"></i>
                 </div>
@@ -32,7 +32,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="mb-1 text-white-50 fw-semibold text-uppercase">Doanh thu tháng</p>
-                        <h2 class="fw-bold mb-0">34.5M</h2>
+                        <h2 class="fw-bold mb-0">0M</h2>
                     </div>
                     <i class="bi bi-cash-coin fs-1 opacity-50"></i>
                 </div>
@@ -62,7 +62,7 @@
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
                         <p class="mb-1 text-dark-50 fw-semibold text-uppercase opacity-75">Khách hàng</p>
-                        <h2 class="fw-bold mb-0">1,245</h2>
+                        <h2 class="fw-bold mb-0">{{ number_format($customersCount ?? 0) }}</h2>
                     </div>
                     <i class="bi bi-people fs-1 opacity-50"></i>
                 </div>
@@ -145,28 +145,36 @@
             </div>
         </div>
 
-        <!-- Module 2.2: Cảnh báo hết hàng (UI Template) -->
+        <!-- Module 2.2: Cảnh báo hết hàng (Dynamic Data) -->
         <div class="card border-0 shadow-sm rounded-4 border-top border-danger border-4">
             <div class="card-header bg-white border-0 pt-4 pb-0">
                 <h6 class="fw-bold text-danger mb-0"><i class="bi bi-exclamation-triangle-fill me-2"></i>Cảnh báo hết hàng</h6>
             </div>
             <div class="card-body p-0 mt-2">
                 <ul class="list-group list-group-flush">
-                    <!-- Dữ liệu Mockup chờ tích hợp backend -->
-                    <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-center border-bottom">
-                        <div>
-                            <span class="d-block fw-semibold text-dark text-truncate" style="max-width: 180px;">Sạc dự phòng 20000mAh</span>
-                            <small class="text-danger fw-bold"><i class="bi bi-arrow-down-short"></i> Còn 2 cái</small>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3">Nhập</a>
-                    </li>
-                    <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-center border-bottom-0">
-                        <div>
-                            <span class="d-block fw-semibold text-dark text-truncate" style="max-width: 180px;">Tai nghe Bluetooth</span>
-                            <small class="text-danger fw-bold"><i class="bi bi-x-circle"></i> Hết hàng</small>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-outline-danger rounded-pill px-3">Nhập</a>
-                    </li>
+                    @forelse($lowStockProducts ?? [] as $lowStock)
+                        <li class="list-group-item px-4 py-3 d-flex justify-content-between align-items-center {{ $loop->last ? 'border-bottom-0' : 'border-bottom' }}">
+                            <div>
+                                <span class="d-block fw-semibold text-dark text-truncate" style="max-width: 180px;" title="{{ $lowStock->name }}">
+                                    {{ $lowStock->name }}
+                                </span>
+                                <!-- Xử lý Logic UI dựa trên tồn kho thực tế -->
+                                @if($lowStock->stock_quantity > 0)
+                                    <small class="text-warning fw-bold"><i class="bi bi-arrow-down-short"></i> Còn {{ $lowStock->stock_quantity }} cái</small>
+                                @else
+                                    <small class="text-danger fw-bold"><i class="bi bi-x-circle"></i> Hết hàng</small>
+                                @endif
+                            </div>
+                            <!-- Điều hướng thẳng đến trang edit của sản phẩm đó để Admin thao tác -->
+                            <a href="{{ route('admin.products.edit', $lowStock->id) }}" class="btn btn-sm btn-outline-danger rounded-pill px-3">Nhập</a>
+                        </li>
+                    @empty
+                        <!-- Trạng thái trống (Empty State) an toàn -->
+                        <li class="list-group-item px-4 py-4 text-center text-muted border-bottom-0">
+                            <i class="bi bi-check-circle-fill text-success fs-3 d-block mb-2"></i>
+                            <span class="fw-medium">Kho hàng đang ổn định</span>
+                        </li>
+                    @endforelse
                 </ul>
             </div>
         </div>

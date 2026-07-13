@@ -15,4 +15,6 @@ interface CustomerRepositoryInterface
      * Thuật toán đảo ngược trạng thái hoạt động (Khóa/Mở khóa)
      */
     public function toggleStatus(int $id): bool;
+
+    public function countAll(): int;
 }
