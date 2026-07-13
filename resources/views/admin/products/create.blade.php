@@ -61,12 +61,23 @@
 
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Thương hiệu <span class="text-danger">*</span></label>
-                        <select name="brand_id" class="form-select" required>
+                        <!-- Thêm ID và sự kiện onchange -->
+                        <select name="brand_id" id="brandSelect" class="form-select" required onchange="toggleNewBrand()">
                             <option value="">-- Chọn thương hiệu --</option>
+
+                            <!-- Render danh sách có sẵn -->
                             @foreach($brands as $brand)
-                                <option value="{{ $brand->id }}">{{ $brand->name }}</option>
+                                <option value="{{ $brand->id }}" {{ (isset($product) && $product->brand_id == $brand->id) ? 'selected' : '' }}>
+                                    {{ $brand->name }}
+                                </option>
                             @endforeach
+
+                            <!-- Option đặc biệt để kích hoạt tạo mới -->
+                            <option value="NEW_BRAND" class="fw-bold text-primary">➕ Thêm thương hiệu mới...</option>
                         </select>
+
+                        <!-- Ô input ẩn, chỉ hiện ra khi chọn NEW_BRAND -->
+                        <input type="text" name="new_brand_name" id="newBrandInput" class="form-control mt-2 d-none border-primary" placeholder="Nhập tên thương hiệu muốn tạo mới...">
                     </div>
 
                     <div class="mb-3">
@@ -94,4 +105,21 @@
         </div>
     </div>
 </form>
+
+
+<script>
+    function toggleNewBrand() {
+        const select = document.getElementById('brandSelect');
+        const input = document.getElementById('newBrandInput');
+
+        if (select.value === 'NEW_BRAND') {
+            input.classList.remove('d-none');
+            input.setAttribute('required', 'required'); // Bắt buộc nhập nếu chọn tạo mới
+        } else {
+            input.classList.add('d-none');
+            input.removeAttribute('required');
+            input.value = ''; // Reset rác
+        }
+    }
+</script>
 @endsection

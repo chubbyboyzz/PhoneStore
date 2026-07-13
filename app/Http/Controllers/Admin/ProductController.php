@@ -161,6 +161,16 @@ class ProductController extends Controller
     {
         $data = $request->validated();
 
+        // 1. Logic xử lý "Tạo nhanh" Thương hiệu
+        if ($data['brand_id'] === 'NEW_BRAND' && $request->filled('new_brand_name')) {
+            $newBrand = Brand::create([
+                'name' => $request->new_brand_name,
+                'slug' => Str::slug($request->new_brand_name),
+                'is_active' => 1
+            ]);
+            $data['brand_id'] = $newBrand->id; // Ghi đè lại bằng ID thật vừa tạo
+        }
+
         $data['slug'] = Str::slug($data['name']);
         $data['sku'] = 'SP' . strtoupper(Str::random(6));
         $data['is_active'] = $request->has('is_active') ? 1 : 0;
@@ -173,7 +183,7 @@ class ProductController extends Controller
             $data['thumbnail'] = 'https://via.placeholder.com/150';
         }
 
-        // THÊM MỚI: Ảnh bộ sưu tập
+        // Ảnh bộ sưu tập
         if ($request->hasFile('gallery')) {
             $galleryPaths = [];
             foreach ($request->file('gallery') as $file) {
@@ -183,10 +193,17 @@ class ProductController extends Controller
             $data['gallery'] = $galleryPaths;
         }
 
-        // Gọi Repository để ghi vào CSDL
+        // 2. Ghi sản phẩm vào DB
         $this->productRepo->create($data);
 
+        // 3. THUẬT TOÁN TỰ ĐỘNG MAP DỮ LIỆU VÀO BẢNG TRUNG GIAN (Pivot Table)
+        $category = Category::find($data['category_id']);
+        if ($category) {
+            // Liên kết Brand vào Category. syncWithoutDetaching đảm bảo an toàn tuyệt đối
+            $category->brands()->syncWithoutDetaching([$data['brand_id']]);
+        }
+
         return redirect()->route('admin.products.index')
-                         ->with('success', 'Đã thêm sản phẩm mới thành công!');
+                         ->with('success', 'Đã thêm sản phẩm và cập nhật liên kết danh mục thành công!');
     }
 }

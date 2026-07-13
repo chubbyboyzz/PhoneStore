@@ -11,7 +11,6 @@ class UpdateProductRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        // SỬA DÒNG NÀY THÀNH TRUE
         return true;
     }
 
@@ -25,7 +24,13 @@ class UpdateProductRequest extends FormRequest
         return [
             'name' => 'required|string|max:255|unique:products,name,' . $productId,
             'category_id' => 'required|integer|exists:categories,id',
-            'brand_id' => 'required|integer|exists:brands,id',
+
+            // Nới lỏng kiểm duyệt tương tự như luồng Store
+            'brand_id' => 'required',
+
+            // Validation thông minh chặn dữ liệu rỗng nếu Admin cố tình chọn tạo mới nhưng không nhập chữ
+            'new_brand_name' => 'required_if:brand_id,NEW_BRAND|nullable|string|max:255',
+
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',

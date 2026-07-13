@@ -29,11 +29,17 @@ class StoreProductRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
+       return [
             'name' => 'required|string|max:255|unique:products,name',
             'thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'category_id' => 'required|integer|exists:categories,id',
-            'brand_id' => 'required|integer|exists:brands,id',
+
+            // Nới lỏng: Bỏ ép kiểu integer và check exists
+            'brand_id' => 'required',
+
+            // Logic phòng thủ mới: Chỉ bắt buộc nhập tên thương hiệu khi chọn option NEW_BRAND
+            'new_brand_name' => 'required_if:brand_id,NEW_BRAND|nullable|string|max:255',
+
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'description' => 'nullable|string',
