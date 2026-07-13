@@ -7,12 +7,13 @@ use App\Http\Controllers\Admin\ProductController;
 use App\Http\Controllers\Admin\CategoryController;
 use App\Http\Controllers\Admin\AdminUserController;
 use App\Http\Controllers\Admin\OrderController;
-use App\Http\Controllers\Admin\CustomerController; // Đã thêm Import cho Customer
+use App\Http\Controllers\Admin\CustomerController;
 
 use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\Frontend\AuthController as FrontendAuthController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\CartController;
+use App\Http\Controllers\Admin\PostController;
 
 
 // ==========================================
@@ -57,6 +58,9 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Dashboard
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+        // Quản lý Bài viết (Posts)
+        Route::resource('posts', PostController::class);
 
         // Quản lý Sản phẩm, Danh mục, Admin Users
         Route::resource('products', ProductController::class);
