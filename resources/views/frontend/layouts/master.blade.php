@@ -175,7 +175,7 @@
                     <!-- Nút Giỏ hàng (Đã cập nhật route chuẩn) -->
                     @auth
                         <li class="nav-item me-lg-3 mt-2 mt-lg-0">
-                            <a href="{{ route('cart.index') }}" class="btn btn-outline-light position-relative border-0" style="padding: 8px 12px;" title="Xem giỏ hàng">
+                            <a href="{{ route('frontend.cart.index') }}" class="btn btn-outline-light position-relative border-0" style="padding: 8px 12px;" title="Xem giỏ hàng">
                                 <i class="bi bi-cart3 fs-5"></i>
                                 @php $cartCount = session('cart') ? count(session('cart')) : 0; @endphp
                                 @if($cartCount > 0)
@@ -202,7 +202,7 @@
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
                                 <!-- Đã cập nhật route về account.index theo thiết kế mới -->
                                 <li>
-                                    <a class="dropdown-item fw-medium py-2" href="{{ route('account.index') }}">
+                                    <a class="dropdown-item fw-medium py-2" href="{{ route('frontend.account.profile') }}">
                                         <i class="bi bi-person-gear me-2 text-muted"></i> Quản lý tài khoản
                                     </a>
                                 </li>
