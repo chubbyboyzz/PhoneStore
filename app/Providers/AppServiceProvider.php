@@ -6,6 +6,9 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use App\Models\Category;
 
+use App\Repositories\Contracts\PostRepositoryInterface;
+use App\Repositories\Eloquent\PostRepository;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -16,7 +19,12 @@ class AppServiceProvider extends ServiceProvider
         $this->app->bind(
         \App\Repositories\Contracts\ProductRepositoryInterface::class,
         \App\Repositories\Eloquent\ProductRepository::class
-    );
+        );
+
+        $this->app->bind(
+            PostRepositoryInterface::class,
+            PostRepository::class
+        );
     }
 
     /**

@@ -14,6 +14,7 @@ use App\Http\Controllers\Frontend\AuthController as FrontendAuthController;
 use App\Http\Controllers\Frontend\AccountController;
 use App\Http\Controllers\Frontend\CartController;
 use App\Http\Controllers\Admin\PostController;
+use App\Http\Controllers\Frontend\PostController as FrontPostController;
 
 
 // ==========================================
@@ -28,6 +29,8 @@ Route::view('/dieu-khoan', 'frontend.pages.terms')->name('pages.terms');
 Route::post('/khach-hang/login', [FrontendAuthController::class, 'login'])->name('frontend.login');
 Route::post('/khach-hang/logout', [FrontendAuthController::class, 'logout'])->name('frontend.logout');
 Route::post('/khach-hang/register', [FrontendAuthController::class, 'register'])->name('frontend.register');
+Route::get('/tin-tuc/{slug}', [FrontPostController::class, 'show'])->name('posts.show');
+Route::get('/tin-tuc', [FrontPostController::class, 'index'])->name('posts.index');
 Route::middleware('auth')->group(function () {
     // Trang danh sách đơn hàng
     Route::get('/tai-khoan/don-hang', [AccountController::class, 'myOrders'])->name('frontend.account.orders');
@@ -39,7 +42,10 @@ Route::middleware('auth')->group(function () {
     Route::post('/gio-hang/them/{id}', [CartController::class, 'add'])->name('frontend.cart.add');
     Route::get('/gio-hang/xoa/{id}', [CartController::class, 'remove'])->name('frontend.cart.remove');
     Route::post('/gio-hang/xac-nhan', [CartController::class, 'checkout'])->name('frontend.cart.checkout');
+
 });
+
+
 
 // ==========================================
 // PHÂN HỆ ADMIN (QUẢN TRỊ VIÊN)
@@ -61,13 +67,12 @@ Route::prefix('admin')->name('admin.')->group(function () {
 
         // Quản lý Bài viết (Posts)
         Route::resource('posts', PostController::class);
+        Route::get('/tin-tuc', [FrontPostController::class, 'index'])->name('posts.index');
 
         // Quản lý Sản phẩm, Danh mục, Admin Users
         Route::resource('products', ProductController::class);
         Route::resource('categories', CategoryController::class);
-        Route::resource('users', AdminUserController::class)->parameters([
-            'users' => 'admin' // Ép tham số URL thành {admin}
-        ]);
+        Route::resource('users', AdminUserController::class)->parameters(['users' => 'admin']);
 
         // Quản lý Đơn hàng (Orders)
         Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
@@ -82,4 +87,5 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('customers', CustomerController::class);
 
     });
+
 });

@@ -137,6 +137,10 @@
                     <a href="#" class="btn btn-outline-light text-start fw-semibold py-2 rounded-3 border-0 text-white-50 hover-white">
                         <i class="bi bi-tags me-2"></i> Quản lý Danh mục
                     </a>
+
+                    <a href="{{ route('admin.posts.index') }}" class="btn btn-outline-light text-start fw-semibold py-2 rounded-3 border-0 text-white-50 hover-white">
+                        <i class="bi bi-newspaper me-2"></i> Quản lý Tin tức
+                    </a>
                 </div>
             </div>
         </div>

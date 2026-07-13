@@ -25,4 +25,19 @@ class PostRepository implements PostRepositoryInterface
     {
         return (bool) $this->model->findOrFail($id)->delete();
     }
+
+    public function findBySlug(string $slug)
+    {
+        return $this->model->where('slug', $slug)
+                           ->where('status', 'published')
+                           ->firstOrFail();
+    }
+
+    public function getPublished(int $perPage = 9)
+    {
+        return $this->model->where('status', 'published')
+                           ->orderBy('published_at', 'desc') // Bài mới nhất lên đầu
+                           ->paginate($perPage);
+    }
+
 }

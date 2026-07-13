@@ -22,7 +22,7 @@ class PostController extends Controller
     public function index()
     {
         // Phân trang 10 bài/trang để tối ưu bộ nhớ
-        $posts = $this->postRepo->getAll(10);
+        $posts = $this->postRepo->getPublished(9);
         return view('frontend.posts.index', compact('posts'));
     }
 
@@ -32,7 +32,8 @@ class PostController extends Controller
     public function show(string $slug)
     {
         // Repository trả về Model, Controller chỉ cần đổ vào view
-        $post = $this->postRepo->findById($slug);
+      $post = $this->postRepo->findBySlug($slug);
+
         return view('frontend.posts.show', compact('post'));
     }
 }

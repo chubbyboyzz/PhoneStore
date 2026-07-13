@@ -113,6 +113,12 @@
                 </a>
             </li>
 
+            <li class="nav-item mb-1">
+                <a class="nav-link py-3 {{ request()->routeIs('admin.posts.*') ? 'active' : '' }}" href="{{ route('admin.posts.index') }}">
+                    <i class="bi bi-newspaper me-3 fs-5"></i> Bài viết
+                </a>
+            </li>
+
             <!-- Dải phân cách module Phân quyền -->
             <li class="nav-item mt-4 mb-2">
                 <!-- Cập nhật: Đổi text-muted thành text-danger để nổi bật phân khu chức năng -->

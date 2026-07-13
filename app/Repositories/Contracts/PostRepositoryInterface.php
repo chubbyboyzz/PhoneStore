@@ -10,4 +10,6 @@ interface PostRepositoryInterface
     public function create(array $data): Post;
     public function update(int $id, array $data): bool;
     public function delete(int $id): bool;
+    public function findBySlug(string $slug);
+    public function getPublished(int $perPage = 9);
 }
