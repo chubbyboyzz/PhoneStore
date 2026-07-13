@@ -17,7 +17,8 @@ class CategoryRepository implements CategoryRepositoryInterface
     public function getAllActive()
     {
         // Thuật toán lấy danh mục đang hoạt động, ưu tiên sort_order nhỏ hiện trước
-        return $this->model->where('is_active', true)
+        return $this->model->with('brands')
+                           ->where('is_active', true)
                            ->orderBy('sort_order', 'asc')
                            ->get();
     }

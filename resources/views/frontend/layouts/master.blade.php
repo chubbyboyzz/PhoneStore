@@ -28,6 +28,46 @@
         }
         .navbar-dark .nav-link:hover { color: #f8d7da; }
         .dropdown-menu { border-radius: 8px; border: 1px solid #eee; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+
+    .custom-multi-level .dropend {
+        position: relative;
+    }
+
+    .custom-multi-level .dropend > .submenu {
+        display: none;
+        position: absolute;
+        top: 0;
+        left: 100%; /* Bắt đầu ngay từ mép phải */
+        min-width: 200px;
+        margin-left: 0; /* BỎ margin để tránh lỗi hụt chuột */
+        z-index: 1050; /* Đảm bảo đè lên mọi nội dung bên dưới */
+        border-radius: 8px;
+    }
+
+    /* KỸ THUẬT: Cầu nối vô hình giữ event Hover */
+    .custom-multi-level .dropend > .submenu::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: -15px; /* Quét một vùng an toàn 15px bên trái */
+        width: 15px;
+        background: transparent;
+    }
+
+    /* Hiệu ứng hiển thị (Ép !important để đè core Bootstrap) */
+    @media (min-width: 992px) {
+        .custom-multi-level .dropend:hover > .submenu {
+            display: block !important;
+            animation: slideIn 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) forwards;
+        }
+    }
+
+    @keyframes slideIn {
+        from { opacity: 0; transform: translateX(-5px); }
+        to { opacity: 1; transform: translateX(0); }
+    }
     </style>
     @stack('styles')
 </head>
@@ -68,13 +108,44 @@
                         <a class="nav-link dropdown-toggle fw-bold px-4 {{ request()->has('category') || request()->routeIs('product.detail') ? 'bg-danger text-white' : '' }}" href="#" data-bs-toggle="dropdown">
                             <i class="bi bi-box-seam-fill me-1"></i> CÁC SẢN PHẨM
                         </a>
-                        <ul class="dropdown-menu shadow-sm border-0 mt-2">
 
-                            <li><a class="dropdown-item fw-medium py-2" href="{{ route('home', ['category' => 'dien-thoai']) }}">Điện thoại thông minh</a></li>
-                            <li><a class="dropdown-item fw-medium py-2" href="{{ route('home', ['category' => 'dong-ho']) }}">Đồng hồ thông minh</a></li>
-                            <li><a class="dropdown-item fw-medium py-2" href="{{ route('home', ['category' => 'phu-kien']) }}">Phụ kiện chính hãng</a></li>
+                        <ul class="dropdown-menu shadow-sm border-0 mt-2 custom-multi-level">
+                            <!-- Duyệt qua các Danh mục -->
+                            @forelse($globalCategories as $category)
+                                <li class="{{ $category->brands->isNotEmpty() ? 'dropend' : '' }}">
+
+                                    <!-- Link của Danh mục gốc -->
+                                    <a class="dropdown-item fw-medium py-2 d-flex justify-content-between align-items-center" href="{{ route('home', ['category' => $category->slug]) }}">
+                                        {{ $category->name }}
+                                        @if($category->brands->isNotEmpty())
+                                            <i class="bi bi-chevron-right small text-muted"></i>
+                                        @endif
+                                    </a>
+
+                                    <!-- Render Submenu Thương hiệu (Brands) nếu tồn tại -->
+                                    @if($category->brands->isNotEmpty())
+                                        <ul class="dropdown-menu submenu border-0 shadow-sm mt-0">
+                                            @foreach($category->brands as $brand)
+                                                <li>
+                                                    <!-- Thuật toán Cross-Filtering: Truyền đồng thời cả category slug và brand id -->
+                                                    <a class="dropdown-item py-2 text-secondary" href="{{ route('home', ['category' => $category->slug, 'brand' => $brand->id]) }}">
+                                                        {{ $brand->name }}
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    @endif
+                                </li>
+                            @empty
+                                <li><span class="dropdown-item fw-medium py-2 text-muted fst-italic">Đang cập nhật danh mục...</span></li>
+                            @endforelse
+
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item fw-bold text-danger py-2" href="{{ route('home') }}">Xem tất cả sản phẩm</a></li>
+                            <li>
+                                <a class="dropdown-item fw-bold text-danger py-2" href="{{ route('home') }}">
+                                    <i class="bi bi-grid-fill me-1"></i> Xem tất cả sản phẩm
+                                </a>
+                            </li>
                         </ul>
                     </li>
 

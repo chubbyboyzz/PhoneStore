@@ -23,7 +23,19 @@ class HomeController extends Controller
 
             // Lọc theo Category
             if ($request->filled('category')) {
-                $query->where('category_id', $request->category);
+                $categorySlug = $request->category;
+
+                // 1. Tìm ID của danh mục dựa trên slug
+                $category = \App\Models\Category::where('slug', $categorySlug)->first();
+
+                // 2. Ép truy vấn
+                if ($category) {
+                    $query->where('category_id', $category->id);
+                } else {
+                    // Phòng thủ (Defensive Programming):
+                    // Nếu user tự gõ bừa 1 slug không tồn tại trên URL, ép truy vấn trả về mảng rỗng
+                    $query->where('id', '<', 0);
+                }
             }
 
             // Lọc theo Brand

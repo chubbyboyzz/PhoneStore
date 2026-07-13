@@ -4,8 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
-use App\Models\Category;
-
+use App\Repositories\Contracts\CategoryRepositoryInterface;
 use App\Repositories\Contracts\PostRepositoryInterface;
 use App\Repositories\Eloquent\PostRepository;
 
@@ -16,11 +15,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(
-        \App\Repositories\Contracts\ProductRepositoryInterface::class,
-        \App\Repositories\Eloquent\ProductRepository::class
-        );
-
+        // Chỉ giữ lại Binding của Post ở đây nếu ông chưa chuyển nó sang RepositoryServiceProvider
         $this->app->bind(
             PostRepositoryInterface::class,
             PostRepository::class
@@ -32,9 +27,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
+        // Khai báo View Composer đúng chuẩn OOP
         View::composer('frontend.layouts.master', function ($view) {
-            $categories = Category::with('brands')->orderBy('name', 'asc')->get();
-            $view->with('categories', $categories);
+            // Tiêm Interface thay vì gọi trực tiếp Model
+            $categoryRepo = app(CategoryRepositoryInterface::class);
+
+            // Tận dụng hàm getAllActive() đã viết sẵn trong Repository
+            $view->with('globalCategories', $categoryRepo->getAllActive());
         });
     }
 }
