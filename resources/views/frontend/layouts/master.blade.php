@@ -52,51 +52,71 @@
             </button>
 
             <div class="collapse navbar-collapse" id="mainMenu">
+
+                <!-- KHU VỰC 1: ĐIỀU HƯỚNG CHÍNH (MAIN MENU) -->
                 <ul class="navbar-nav me-auto align-items-center">
+
+                    <!-- 1. Trang chủ -->
                     <li class="nav-item">
-                        <a class="nav-link text-white fw-bold px-4 bg-danger text-nowrap" href="{{ route('home') }}">
-                            <i class="bi bi-grid-fill me-1"></i> TRANG CHỦ
+                        <a class="nav-link fw-bold px-4 text-nowrap {{ request()->routeIs('home') && !request()->has('category') ? 'bg-danger text-white' : '' }}" href="{{ route('home') }}">
+                            <i class="bi bi-house-door-fill me-1"></i> TRANG CHỦ
                         </a>
                     </li>
+
+                    <!-- 2. Các sản phẩm (Dropdown Danh mục) -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">ĐIỆN THOẠI THÔNG MINH</a>
-                        <ul class="dropdown-menu"><li><a class="dropdown-item fw-medium" href="#">Apple iPhone</a></li></ul>
+                        <a class="nav-link dropdown-toggle fw-bold px-4 {{ request()->has('category') || request()->routeIs('product.detail') ? 'bg-danger text-white' : '' }}" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-box-seam-fill me-1"></i> CÁC SẢN PHẨM
+                        </a>
+                        <ul class="dropdown-menu shadow-sm border-0 mt-2">
+
+                            <li><a class="dropdown-item fw-medium py-2" href="{{ route('home', ['category' => 'dien-thoai']) }}">Điện thoại thông minh</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{{ route('home', ['category' => 'dong-ho']) }}">Đồng hồ thông minh</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{{ route('home', ['category' => 'phu-kien']) }}">Phụ kiện chính hãng</a></li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li><a class="dropdown-item fw-bold text-danger py-2" href="{{ route('home') }}">Xem tất cả sản phẩm</a></li>
+                        </ul>
                     </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">ĐỒNG HỒ THÔNG MINH</a>
-                        <ul class="dropdown-menu"><li><a class="dropdown-item fw-medium" href="#">Apple Watch</a></li></ul>
+
+                    <!-- 3. Tin tức -->
+                    <li class="nav-item">
+                        <a class="nav-link fw-bold px-4 text-nowrap {{ request()->routeIs('posts.*') ? 'bg-danger text-white' : '' }}" href="{{ route('posts.index') }}">
+                            <i class="bi bi-newspaper me-1"></i> TIN TỨC
+                        </a>
                     </li>
+
+                    <!-- 4. Giới thiệu -->
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">MÁY TÍNH BẢNG</a>
-                        <ul class="dropdown-menu"><li><a class="dropdown-item fw-medium" href="#">iPad</a></li></ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown">PHỤ KIỆN</a>
-                        <ul class="dropdown-menu"><li><a class="dropdown-item fw-medium" href="#">Cáp sạc, tai nghe</a></li></ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown"><i class="bi bi-three-dots"></i> THÊM</a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item fw-medium" href="#">Chính sách bảo hành</a></li>
-                            <li><a class="dropdown-item fw-medium" href="#">Quy định đổi trả</a></li>
+                        <a class="nav-link dropdown-toggle fw-bold px-4 {{ request()->routeIs('pages.*') ? 'bg-danger text-white' : '' }}" href="#" data-bs-toggle="dropdown">
+                            <i class="bi bi-info-circle-fill me-1"></i> GIỚI THIỆU
+                        </a>
+                        <ul class="dropdown-menu shadow-sm border-0 mt-2">
+                            <li><a class="dropdown-item fw-medium py-2" href="{{ route('pages.about') }}">Về Nam Khuê Corporation</a></li>
+                            <li><a class="dropdown-item fw-medium py-2" href="{{ route('pages.return') }}">Chính sách đổi trả</a></li>
+                            <li><a class="dropdown-item fw-bold text-danger py-2" href="{{ route('pages.terms') }}">Điều khoản & Chính sách</a></li>
+                            <li><a class="dropdown-item fw-bold text-danger py-2" href="{{ route('pages.warranty') }}">Chính sách bảo hành</a></li>
                         </ul>
                     </li>
                 </ul>
 
+                <!-- KHU VỰC 2: TIỆN ÍCH NGƯỜI DÙNG (TÀI KHOẢN & GIỎ HÀNG) -->
                 <ul class="navbar-nav align-items-center pb-2 pb-lg-0">
+                    <!-- Nút Giỏ hàng (Đã cập nhật route chuẩn) -->
                     @auth
                         <li class="nav-item me-lg-3 mt-2 mt-lg-0">
-                            <a href="{{ route('frontend.cart.index') }}" class="btn btn-outline-light position-relative border-0" style="padding: 8px 12px;" title="Xem giỏ hàng">
+                            <a href="{{ route('cart.index') }}" class="btn btn-outline-light position-relative border-0" style="padding: 8px 12px;" title="Xem giỏ hàng">
                                 <i class="bi bi-cart3 fs-5"></i>
                                 @php $cartCount = session('cart') ? count(session('cart')) : 0; @endphp
                                 @if($cartCount > 0)
-                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light">
+                                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger border border-light shadow-sm">
                                         {{ $cartCount }}
                                     </span>
                                 @endif
                             </a>
                         </li>
                     @endauth
+
+                    <!-- Khu vực Tài khoản (Authentication State) -->
                     @guest
                         <li class="nav-item ms-lg-3 d-flex align-items-center mt-2 mt-lg-0">
                             <button type="button" class="btn btn-danger fw-bold shadow-sm rounded-pill px-4 py-2 text-nowrap" data-bs-toggle="modal" data-bs-target="#loginModal">
@@ -106,21 +126,18 @@
                     @else
                         <li class="nav-item dropdown ms-lg-3 d-flex align-items-center mt-2 mt-lg-0">
                             <a class="nav-link dropdown-toggle text-white fw-bold px-4 py-2 bg-danger rounded-pill shadow-sm text-nowrap" href="#" data-bs-toggle="dropdown">
-                                <i class="bi bi-person-check-fill me-1"></i> Chào, {{ Auth::user()->name }}
+                                <i class="bi bi-person-check-fill me-1"></i> {{ Auth::user()->name }}
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2">
+                                <!-- Đã cập nhật route về account.index theo thiết kế mới -->
                                 <li>
-                                    <a class="dropdown-item fw-medium py-2" href="{{ route('frontend.account.orders') }}">
-                                        <i class="bi bi-bag-check me-2 text-muted"></i> Đơn hàng của tôi
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item fw-medium py-2" href="{{ route('frontend.account.profile') }}">
-                                        <i class="bi bi-person-gear me-2 text-muted"></i> Thông tin cá nhân
+                                    <a class="dropdown-item fw-medium py-2" href="{{ route('account.index') }}">
+                                        <i class="bi bi-person-gear me-2 text-muted"></i> Quản lý tài khoản
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
+                                    <!-- Chú ý: Route đăng xuất cần giữ nguyên cấu trúc POST để bảo mật -->
                                     <form action="{{ route('frontend.logout') }}" method="POST" class="m-0 p-0">
                                         @csrf
                                         <button type="submit" class="dropdown-item fw-medium text-danger py-2 w-100 text-start border-0 bg-transparent">
