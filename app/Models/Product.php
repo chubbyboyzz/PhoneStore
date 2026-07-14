@@ -10,12 +10,13 @@ class Product extends Model
     use HasFactory;
     protected $fillable = [
         'category_id', 'brand_id', 'name', 'slug', 'sku', 'price',
-        'sale_price', 'stock_quantity', 'description', 'thumbnail',
+        'wholesale_price', 'stock_quantity', 'description', 'thumbnail',
         'is_featured', 'views', 'is_active', 'gallery'
     ];
 
     protected $casts = [
         'price' => 'decimal:2',
+        'wholesale_price' => 'decimal:2',
         'sale_price' => 'decimal:2',
         'is_featured' => 'boolean',
         'is_active' => 'boolean',
