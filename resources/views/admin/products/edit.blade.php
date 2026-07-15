@@ -81,8 +81,20 @@
                     </div>
 
                     <div class="mb-3">
-                        <label class="form-label fw-semibold">Giá bán (VNĐ) <span class="text-danger">*</span></label>
-                        <input type="number" name="price" class="form-control" value="{{ old('price', $product->price) }}" required min="0">
+                        <label class="form-label fw-semibold">Giá bán lẻ (VNĐ) <span class="text-danger">*</span></label>
+                        <!-- Thêm ID retailPrice để JS gọi -->
+                        <input type="number" name="price" id="retailPrice" class="form-control" value="{{ old('price', $product->price ?? '') }}" required min="0">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold text-primary">Giá bán sỉ (VNĐ) <span class="text-danger">*</span></label>
+                        <!-- Thêm ID wholesalePrice để JS gọi -->
+                        <input type="number" name="wholesale_price" id="wholesalePrice" class="form-control border-primary" value="{{ old('wholesale_price', $product->wholesale_price ?? '') }}" required min="0">
+
+                        <!-- Dòng cảnh báo thời gian thực ẩn -->
+                        <small id="priceWarning" class="text-danger d-none fw-medium mt-1">
+                            <i class="bi bi-exclamation-triangle-fill"></i> Cảnh báo: Giá sỉ đang lớn hơn hoặc bằng giá lẻ!
+                        </small>
                     </div>
 
                     <div class="mb-3">
@@ -105,4 +117,33 @@
         </div>
     </div>
 </form>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const retailInput = document.getElementById('retailPrice');
+    const wholesaleInput = document.getElementById('wholesalePrice');
+    const warningMsg = document.getElementById('priceWarning');
+    const submitBtn = document.querySelector('button[type="submit"]');
+
+    function validatePricing() {
+        const retail = parseFloat(retailInput.value) || 0;
+        const wholesale = parseFloat(wholesaleInput.value) || 0;
+
+        // Nếu người dùng đã nhập cả 2 giá và Giá sỉ >= Giá lẻ
+        if (wholesale > 0 && retail > 0 && wholesale >= retail) {
+            warningMsg.classList.remove('d-none');
+            wholesaleInput.classList.add('is-invalid');
+            submitBtn.disabled = true; // Khóa nút Lưu
+        } else {
+            warningMsg.classList.add('d-none');
+            wholesaleInput.classList.remove('is-invalid');
+            submitBtn.disabled = false; // Mở khóa
+        }
+    }
+
+    // Lắng nghe sự kiện gõ phím thời gian thực (Real-time Validation)
+    retailInput.addEventListener('input', validatePricing);
+    wholesaleInput.addEventListener('input', validatePricing);
+});
+</script>
 @endsection

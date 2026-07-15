@@ -13,7 +13,7 @@
 <div class="card border-0 shadow-sm rounded-4">
     <div class="card-body p-0">
         <div class="table-responsive">
-            <div class="row mb-3">
+            <div class="row mb-3 mt-3 px-3">
                 <div class="col-md-6 col-lg-4">
                     <form action="{{ route('admin.products.index') }}" method="GET">
                         <div class="input-group">
@@ -27,6 +27,7 @@
                     </form>
                 </div>
             </div>
+
             <table class="table table-hover align-middle mb-0">
                 <thead class="table-light">
                     <tr>
@@ -34,7 +35,10 @@
                         <th class="py-3">Hình ảnh</th>
                         <th class="py-3">Tên sản phẩm</th>
                         <th class="py-3">Danh mục</th>
-                        <th class="py-3 text-end">Giá bán</th>
+
+                        <!-- Đã cập nhật tiêu đề cột Giá -->
+                        <th class="py-3 text-end" style="width: 150px;">Bảng giá (Lẻ / Sỉ)</th>
+
                         <th class="py-3 text-center">Trạng thái</th>
                         <th class="py-3 text-center pe-4">Thao tác</th>
                     </tr>
@@ -44,13 +48,21 @@
                     <tr>
                         <td class="ps-4 text-muted fw-semibold">{{ $item->sku }}</td>
                         <td>
-                            <img src="{{ $item->thumbnail }}" alt="{{ $item->name }}" class="rounded-3" style="width: 50px; height: 50px; object-fit: cover;">
+                            <img src="{{ $item->thumbnail }}" alt="{{ $item->name }}" class="rounded-3 shadow-sm" style="width: 50px; height: 50px; object-fit: cover;">
                         </td>
                         <td class="fw-semibold text-dark">{{ $item->name }}</td>
                         <td>{{ $item->category->name ?? 'N/A' }}</td>
-                        <td class="text-end fw-bold text-danger">
-                            {{ number_format($item->price, 0, ',', '.') }} đ
+
+                        <!-- KHU VỰC ĐÃ CẬP NHẬT LOGIC HIỂN THỊ DỮ LIỆU KÉP -->
+                        <td class="text-end">
+                            <div class="fw-bold text-dark mb-1" title="Giá bán lẻ (Áp dụng cho khách thường)">
+                                {{ number_format($item->price, 0, ',', '.') }} đ
+                            </div>
+                            <div class="fw-medium text-primary small" title="Giá bán sỉ (Áp dụng cho đại lý)">
+                                Sỉ: {{ number_format($item->wholesale_price, 0, ',', '.') }} đ
+                            </div>
                         </td>
+
                         <td class="text-center">
                             @if($item->is_active)
                                 <span class="badge bg-success rounded-pill px-3">Hoạt động</span>
@@ -82,6 +94,7 @@
             </table>
         </div>
     </div>
+
     <!-- Hiển thị thanh phân trang mặc định của Laravel -->
     <div class="card-footer bg-white border-0 py-3">
         {{ $products->links('pagination::bootstrap-5') }}

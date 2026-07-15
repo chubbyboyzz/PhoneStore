@@ -42,7 +42,9 @@ class StoreProductRequest extends FormRequest
 
             'price' => 'required|numeric|min:0',
             'stock_quantity' => 'required|integer|min:0',
+            'wholesale_price'=> 'required|numeric|min:0|lte:price',
             'description' => 'nullable|string',
+
         ];
     }
 
@@ -55,6 +57,7 @@ class StoreProductRequest extends FormRequest
             'name.required' => 'Tên sản phẩm không được để trống.',
             'name.unique' => 'Tên sản phẩm này đã tồn tại trong hệ thống.',
             'price.min' => 'Giá bán không hợp lệ.',
+            'wholesale_price.lte' => 'Giá sỉ không được lớn hơn giá bán lẻ.',
         ];
     }
 }
