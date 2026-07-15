@@ -48,4 +48,9 @@ class Product extends Model
         }
         return $query;
     }
+
+    public function getApplicablePriceAttribute()
+    {
+        return \Illuminate\Support\Facades\Auth::check() ? $this->wholesale_price : $this->price;
+    }
 }

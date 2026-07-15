@@ -42,6 +42,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/gio-hang/them/{id}', [CartController::class, 'add'])->name('frontend.cart.add');
     Route::get('/gio-hang/xoa/{id}', [CartController::class, 'remove'])->name('frontend.cart.remove');
     Route::post('/gio-hang/xac-nhan', [CartController::class, 'checkout'])->name('frontend.cart.checkout');
+    Route::post('/gio-hang/cap-nhat', [CartController::class, 'update'])->name('frontend.cart.update');
 
 });
 

@@ -16,8 +16,8 @@
                                 <tr>
                                     <th>Sản phẩm</th>
                                     <th>Đơn giá</th>
-                                    <th class="text-center">Số lượng</th>
-                                    <th class="text-end">Thành tiền</th>
+                                    <th class="text-center" style="width: 150px;">Số lượng</th>
+                                    <th class="text-end" style="width: 130px;">Thành tiền</th>
                                     <th></th>
                                 </tr>
                             </thead>
@@ -36,8 +36,28 @@
                                             </div>
                                         </td>
                                         <td class="text-danger fw-semibold">{{ number_format($details['price'], 0, ',', '.') }}đ</td>
-                                        <td class="text-center fw-bold">{{ $details['quantity'] }}</td>
-                                        <td class="text-end text-danger fw-bold">{{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}đ</td>
+
+                                        <!-- CỘT SỐ LƯỢNG MỚI (TƯƠNG TÁC ĐƯỢC) -->
+                                        <td>
+                                            <div class="input-group input-group-sm mx-auto">
+                                                <button class="btn btn-outline-secondary btn-qty" type="button" data-action="minus" data-id="{{ $id }}">-</button>
+
+                                                <input type="number" class="form-control text-center input-qty fw-bold"
+                                                       id="qty-{{ $id }}"
+                                                       data-id="{{ $id }}"
+                                                       value="{{ $details['quantity'] }}"
+                                                       min="1"
+                                                       style="max-width: 50px;">
+
+                                                <button class="btn btn-outline-secondary btn-qty" type="button" data-action="plus" data-id="{{ $id }}">+</button>
+                                            </div>
+                                        </td>
+
+                                        <!-- Cột thành tiền được gắn ID để JS trỏ vào update -->
+                                        <td class="text-end text-danger fw-bold item-total" id="item-total-{{ $id }}">
+                                            {{ number_format($details['price'] * $details['quantity'], 0, ',', '.') }}đ
+                                        </td>
+
                                         <td class="text-end">
                                             <a href="{{ route('frontend.cart.remove', $id) }}" class="btn btn-sm btn-outline-secondary rounded-circle" title="Xóa">
                                                 <i class="bi bi-trash"></i>
@@ -52,15 +72,17 @@
             </div>
 
             <div class="col-lg-4">
-                <div class="bg-white p-4 rounded-4 shadow-sm border border-secondary-subtle">
+                <div class="bg-white p-4 rounded-4 shadow-sm border border-secondary-subtle sticky-top" style="top: 100px;">
                     <h5 class="fw-bold border-bottom pb-3 mb-3">Thông tin đơn hàng</h5>
                     <div class="d-flex justify-content-between mb-3">
                         <span class="text-muted">Tạm tính:</span>
-                        <span class="fw-bold">{{ number_format($total, 0, ',', '.') }}đ</span>
+                        <!-- ID cart-subtotal -->
+                        <span class="fw-bold cart-subtotal">{{ number_format($total, 0, ',', '.') }}đ</span>
                     </div>
                     <div class="d-flex justify-content-between mb-4 border-top pt-3">
                         <span class="fw-bold fs-5">TỔNG TIỀN:</span>
-                        <span class="text-danger fw-bolder fs-4">{{ number_format($total, 0, ',', '.') }}đ</span>
+                        <!-- ID cart-total -->
+                        <span class="text-danger fw-bolder fs-4 cart-total">{{ number_format($total, 0, ',', '.') }}đ</span>
                     </div>
 
                     <form action="{{ route('frontend.cart.checkout') }}" method="POST">
@@ -69,7 +91,7 @@
                             <i class="bi bi-check2-circle fs-5 me-1"></i> Gửi yêu cầu đặt hàng
                         </button>
                     </form>
-                    <p class="text-muted small text-center mt-3 mb-0">Hệ thống sẽ lưu đơn ở trạng thái Chờ duyệt. Nhân viên sẽ liên hệ lại với quý đại lý ngay lập tức.</p>
+                    <p class="text-muted small text-center mt-3 mb-0">Hệ thống sẽ lưu đơn ở trạng thái Chờ duyệt. Nhân viên sẽ liên hệ lại ngay lập tức.</p>
                 </div>
             </div>
         </div>
@@ -82,4 +104,81 @@
         </div>
     @endif
 </div>
+
+<!-- SCRIPTS XỬ LÝ LOGIC GIỎ HÀNG THÔNG MINH -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const qtyButtons = document.querySelectorAll('.btn-qty');
+    const qtyInputs = document.querySelectorAll('.input-qty');
+
+    // Hàm gọi API Fetch gửi lên Controller
+    async function updateCart(productId, quantity) {
+        try {
+            const response = await fetch('{{ route('frontend.cart.update') }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}' // Rào chắn bảo mật chống giả mạo request
+                },
+                body: JSON.stringify({
+                    id: productId,
+                    quantity: quantity
+                })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                // Update UI DOM: Thành tiền của 1 món
+                document.getElementById('item-total-' + productId).innerText = data.item_total_formatted;
+
+                // Update UI DOM: Tổng tiền đơn hàng
+                document.querySelectorAll('.cart-subtotal, .cart-total').forEach(el => {
+                    el.innerText = data.cart_total_formatted;
+                });
+            } else {
+                alert(data.message);
+            }
+        } catch (error) {
+            console.error('Error updating cart:', error);
+            alert('Có lỗi xảy ra khi cập nhật giỏ hàng. Vui lòng tải lại trang.');
+        }
+    }
+
+    // Bắt sự kiện bấm nút Cộng / Trừ
+    qtyButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.getAttribute('data-id');
+            const action = this.getAttribute('data-action');
+            const inputEl = document.getElementById('qty-' + id);
+            let currentVal = parseInt(inputEl.value) || 1;
+
+            if (action === 'plus') {
+                currentVal++;
+            } else if (action === 'minus' && currentVal > 1) {
+                currentVal--;
+            }
+
+            inputEl.value = currentVal;
+            updateCart(id, currentVal); // Bắn API
+        });
+    });
+
+    // Bắt sự kiện người dùng tự gõ số bằng bàn phím (nâng cao UX)
+    qtyInputs.forEach(input => {
+        input.addEventListener('change', function() {
+            const id = this.getAttribute('data-id');
+            let currentVal = parseInt(this.value);
+
+            // Phòng thủ: Cấm gõ số âm hoặc chữ cái
+            if (isNaN(currentVal) || currentVal < 1) {
+                currentVal = 1;
+                this.value = currentVal;
+            }
+
+            updateCart(id, currentVal); // Bắn API
+        });
+    });
+});
+</script>
 @endsection

@@ -30,15 +30,13 @@ class CartController extends Controller
         $product = Product::findOrFail($id);
         $cart = session()->get('cart', []);
 
-        // Nếu sản phẩm đã có trong giỏ, tăng số lượng thêm 1
         if (isset($cart[$id])) {
             $cart[$id]['quantity']++;
         } else {
-            // Nếu chưa có, tạo mới phần tử trong giỏ
             $cart[$id] = [
                 "name" => $product->name,
                 "quantity" => 1,
-                "price" => $product->price,
+                "price" => $product->applicable_price,
                 "thumbnail" => $product->thumbnail,
                 "sku" => $product->sku
             ];
@@ -59,6 +57,46 @@ class CartController extends Controller
             session()->put('cart', $cart);
         }
         return redirect()->back()->with('success', 'Đã xóa sản phẩm khỏi giỏ!');
+    }
+
+    /**
+     * API cập nhật số lượng sản phẩm bằng Fetch/AJAX
+     */
+    public function update(Request $request)
+    {
+        // Nhận dữ liệu từ JSON body
+        $id = $request->id;
+        $quantity = (int) $request->quantity;
+
+        // Validation phòng thủ (Defensive Programming)
+        if ($quantity < 1) {
+            return response()->json(['success' => false, 'message' => 'Số lượng không hợp lệ!']);
+        }
+
+        $cart = session()->get('cart', []);
+
+        if (isset($cart[$id])) {
+            // 1. Cập nhật số lượng mới vào Session
+            $cart[$id]['quantity'] = $quantity;
+            session()->put('cart', $cart);
+
+            // 2. Tính toán lại Thành tiền của 1 sản phẩm
+            $itemTotal = $cart[$id]['price'] * $quantity;
+
+            // 3. Tính toán lại Tổng tiền toàn bộ giỏ hàng
+            $cartTotal = collect($cart)->sum(function ($item) {
+                return $item['price'] * $item['quantity'];
+            });
+
+            // 4. Trả về Response chuẩn JSON
+            return response()->json([
+                'success' => true,
+                'item_total_formatted' => number_format($itemTotal, 0, ',', '.') . 'đ',
+                'cart_total_formatted' => number_format($cartTotal, 0, ',', '.') . 'đ'
+            ]);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Sản phẩm không tồn tại trong giỏ!']);
     }
 
     /**

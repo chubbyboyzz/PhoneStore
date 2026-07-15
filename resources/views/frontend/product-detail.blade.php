@@ -49,8 +49,8 @@
 
         <div class="col-md-7">
             <div class="product-info ps-md-3">
-                <div class="badge bg-danger bg-opacity-10 text-danger border border-danger mb-3 px-3 py-2 fw-bold">
-                    <i class="bi bi-check-circle-fill me-1"></i> Tình trạng: Sẵn kho sỉ
+                <div class="badge bg-danger bg-opacity-10 text-white border border-danger mb-3 px-3 py-2 fw-bold">
+                    <i class="bi bi-check-circle-fill me-1"></i> Tình trạng: Sẵn kho
                 </div>
 
                 <h1 class="fw-bolder text-dark mb-4" style="font-size: 2rem;">{{ $product->name }}</h1>
@@ -58,22 +58,19 @@
                 <div class="bg-light rounded-4 p-4 mb-4 border">
                     <div class="product-price-box mb-4 p-3 bg-white rounded-4 border border-secondary-subtle shadow-sm">
                         <div class="d-flex align-items-center gap-2">
-                            <span class="text-muted fw-semibold">Giá phân phối sỉ:</span>
-
                             @auth
+                                <span class="text-muted fw-semibold">Giá phân phối sỉ:</span>
                                 <span class="text-danger fw-bolder fs-3">
-                                    {{ number_format($product->price ?? 0, 0, ',', '.') }}đ
+                                    {{ number_format($product->wholesale_price ?? 0, 0, ',', '.') }}đ
                                 </span>
                                 <span class="badge bg-success-subtle text-success border border-success border-opacity-25 ms-2 rounded-pill px-3">
                                     <i class="bi bi-check-circle-fill me-1"></i> Giá đại lý chính thức
                                 </span>
                             @else
-                                <div class="d-flex align-items-center gap-3">
-                                    <span class="text-secondary fw-bold fst-italic">🔒 Giá bảo mật</span>
-                                    <button type="button" class="btn btn-sm btn-outline-danger fw-bold rounded-pill px-3" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                        <i class="bi bi-box-arrow-in-right me-1"></i> Đăng nhập để xem giá sỉ
-                                    </button>
-                                </div>
+                                <span class="text-muted fw-semibold">Giá:</span>
+                                <span class="text-dark fw-bolder fs-3">
+                                    {{ number_format($product->price ?? 0, 0, ',', '.') }}đ
+                                </span>
                             @endauth
                         </div>
                     </div>
@@ -92,21 +89,19 @@
                 </div>
 
                 <div class="d-flex flex-column gap-3 mb-5">
-                    @auth
                     <form action="{{ route('frontend.cart.add', $product->id) }}" method="POST">
                         @csrf
                         <button type="submit" class="btn btn-dark btn-lg fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2 py-3 rounded-3 w-100 mb-2">
                             <i class="bi bi-cart-plus-fill fs-4"></i> THÊM VÀO GIỎ HÀNG
                         </button>
                     </form>
-                    @endauth
-                    <a href="https://zalo.me/0862.542.394?text=Xin chào, tôi cần báo giá sỉ cho mã SP: {{ $product->sku }}"
+                    <a href="https://zalo.me/0862542394?text={{ urlencode('Xin chào, tôi cần báo giá mã SP: ' . ($product->sku ?? '')) }}"
                        target="_blank"
                        class="btn btn-danger btn-lg fw-bold shadow-sm d-flex justify-content-center align-items-center gap-2 py-3 rounded-3"
                        style="transition: all 0.3s;">
-                        <i class="bi bi-chat-dots-fill fs-4"></i> NHẬN BÁO GIÁ SỈ QUA ZALO
+                        <i class="bi bi-chat-dots-fill fs-4"></i> NHẬN TƯ VẤN BÁO GIÁ QUA ZALO
                     </a>
-                    <a href="tel:0862.542.394" class="btn btn-outline-dark btn-lg fw-bold d-flex justify-content-center align-items-center gap-2 py-3 rounded-3">
+                    <a href="tel:0862542394" class="btn btn-outline-dark btn-lg fw-bold d-flex justify-content-center align-items-center gap-2 py-3 rounded-3">
                         <i class="bi bi-telephone-fill fs-5"></i> GỌI HOTLINE TƯ VẤN NGAY
                     </a>
                 </div>

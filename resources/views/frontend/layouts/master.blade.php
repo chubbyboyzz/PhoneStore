@@ -227,14 +227,6 @@
     <main style="min-height: 60vh;">
         @yield('content')
     </main>
-
-    <footer class="bg-dark text-white pt-5 pb-3 mt-5">
-        <div class="container text-center">
-            <p class="mb-1 fw-medium">&copy; {{ date('Y') }} Nam Khuê Corporation. Tất cả quyền được bảo lưu.</p>
-            <p class="small text-muted mb-0">Hệ thống phân phối sỉ phụ kiện điện thoại toàn quốc.</p>
-        </div>
-    </footer>
-
     <div class="position-fixed top-0 end-0 p-3" style="z-index: 9999; margin-top: 80px;">
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show border-0 shadow-lg rounded-4 p-3 mb-2 custom-toast" role="alert" style="min-width: 320px;">
@@ -306,66 +298,6 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-danger w-100 fw-bold py-2 rounded-3 shadow-sm mb-3">ĐĂNG NHẬP HỆ THỐNG</button>
-
-                        <div class="text-center">
-                            <span class="text-muted small">Chưa có tài khoản đại lý?</span>
-                            <a href="#" class="text-danger small fw-bold text-decoration-none ms-1" data-bs-toggle="modal" data-bs-target="#registerModal">Đăng ký ngay</a>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="registerModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content border-0 shadow-lg rounded-4">
-                <div class="modal-header border-bottom-0 pb-0">
-                    <h5 class="modal-title fw-bold text-dark fs-4"><i class="bi bi-person-plus-fill text-danger me-2"></i>Đăng ký đại lý sỉ mới</h5>
-                    <button type="button" class="btn-close shadow-none" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body p-4">
-                    <form action="{{ route('frontend.register') }}" method="POST">
-                        @csrf
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold small">Họ tên người liên hệ <span class="text-danger">*</span></label>
-                                    <input type="text" name="name" class="form-control bg-light shadow-none" required value="{{ old('name') }}">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold small">Email đăng nhập <span class="text-danger">*</span></label>
-                                    <input type="email" name="email" class="form-control bg-light shadow-none" required value="{{ old('email') }}">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold small">Mật khẩu (Tối thiểu 6 số) <span class="text-danger">*</span></label>
-                                    <input type="password" name="password" class="form-control bg-light shadow-none" required>
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold small">Nhập lại mật khẩu <span class="text-danger">*</span></label>
-                                    <input type="password" name="password_confirmation" class="form-control bg-light shadow-none" required>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold small">Số điện thoại nhận báo giá</label>
-                                    <input type="text" name="phone" class="form-control bg-light shadow-none" value="{{ old('phone') }}">
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold small">Địa chỉ tổng kho của đại lý</label>
-                                    <textarea name="address" class="form-control bg-light shadow-none" rows="4">{{ old('address') }}</textarea>
-                                </div>
-                                <div class="p-3 bg-light rounded-3 border small text-muted mt-4">
-                                    <i class="bi bi-info-circle-fill text-danger me-1"></i> Lưu ý: Đăng ký xong hệ thống tự động xét duyệt, ông có thể sử dụng tài khoản này để yêu cầu báo giá.
-                                </div>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-danger w-100 fw-bold py-2 rounded-3 shadow-sm mt-4 mb-3">ĐĂNG KÝ ĐẠI LÝ CHÍNH THỨC</button>
-
-                        <div class="text-center">
-                            <span class="text-muted small">Đã có tài khoản?</span>
-                            <a href="#" class="text-danger small fw-bold text-decoration-none ms-1" data-bs-toggle="modal" data-bs-target="#loginModal">Đăng nhập tại đây</a>
-                        </div>
                     </form>
                 </div>
             </div>
@@ -424,4 +356,105 @@
         }
     </style>
 </body>
+
+<footer class="bg-dark text-light pt-5 mt-5 border-top border-danger border-4">
+    <div class="container py-4">
+        <div class="row g-4">
+
+            <!-- Cột 1: Thông tin Doanh nghiệp & Pháp lý -->
+            <div class="col-lg-4 col-md-6">
+                <h5 class="text-uppercase fw-bold text-white mb-4" style="letter-spacing: 1px;">
+                    <i class="bi bi-phone text-danger me-2"></i> Nam Khuê Corporation
+                </h5>
+                <p class="text-white-50 small lh-lg mb-3">
+                    Tổng kho phân phối phụ kiện điện thoại. Đối tác cung cấp sỉ/lẻ uy tín hàng đầu với mức giá cạnh tranh nhất thị trường.
+                </p>
+                <div class="d-flex gap-3 mt-4">
+                    <a href="https://web.facebook.com/NKMobile25" class="btn btn-outline-light btn-sm rounded-circle"><i class="bi bi-facebook"></i></a>
+                </div>
+            </div>
+
+            <!-- Cột 2: Thông tin Liên hệ (Contact) -->
+            <div class="col-lg-3 col-md-6">
+                <h6 class="text-uppercase fw-bold text-white mb-4 border-bottom border-secondary pb-2 d-inline-block">
+                    Liên hệ trực tiếp
+                </h6>
+                <ul class="list-unstyled text-white-50 small lh-lg">
+                    <li class="mb-3 d-flex align-items-start">
+                        <i class="bi bi-geo-alt-fill text-danger me-3 mt-1 fs-6"></i>
+                        <span>154 đường Cầu Bươu, Khu đô thị Đại Thanh, Hà Nội</span>
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="bi bi-telephone-fill text-danger me-3 fs-6"></i>
+                        <a href="tel:0862542394" class="text-white-50 text-decoration-none hover-white">0862.542.394 (Hotline/Zalo)</a>
+                    </li>
+                    <li class="mb-3 d-flex align-items-center">
+                        <i class="bi bi-envelope-fill text-danger me-3 fs-6"></i>
+                        <a href="mailto:duccuongnd2305@gmail.com" class="text-white-50 text-decoration-none hover-white">duccuongnd2305@gmail.com</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Cột 3: Liên kết & Chính sách (Tích hợp Route nội bộ) -->
+            <div class="col-lg-2 col-md-6">
+                <h6 class="text-uppercase fw-bold text-white mb-4 border-bottom border-secondary pb-2 d-inline-block">
+                    Chính sách
+                </h6>
+                <ul class="list-unstyled text-white-50 small lh-lg">
+                    <li class="mb-2">
+                        <a href="{{ route('pages.about') }}" class="text-white-50 text-decoration-none hover-red transition-all">
+                            <i class="bi bi-chevron-right text-danger me-1" style="font-size: 10px;"></i> Về chúng tôi
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ route('pages.warranty') }}" class="text-white-50 text-decoration-none hover-red transition-all">
+                            <i class="bi bi-chevron-right text-danger me-1" style="font-size: 10px;"></i> Chính sách bảo hành
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ route('pages.return') }}" class="text-white-50 text-decoration-none hover-red transition-all">
+                            <i class="bi bi-chevron-right text-danger me-1" style="font-size: 10px;"></i> Quy định đổi trả
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{{ route('pages.terms') }}" class="text-white-50 text-decoration-none hover-red transition-all">
+                            <i class="bi bi-chevron-right text-danger me-1" style="font-size: 10px;"></i> Điều khoản dịch vụ
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Cột 4: Đăng ký nhận báo giá -->
+            <div class="col-lg-3 col-md-6">
+                <h6 class="text-uppercase fw-bold text-white mb-4 border-bottom border-secondary pb-2 d-inline-block">
+                    Đăng ký đại lý
+                </h6>
+                <p class="text-white-50 small mb-3">Nhắn tin cho số điện thoại liên hệ để được tư vấn và đăng ký làm đại lý.</p>
+                </form>
+                <div class="mt-4">
+                    <img src="https://images.dmca.com/Badges/dmca-badge-w100-5x1-10.png?ID=xxxx" alt="DMCA Protected" class="img-fluid opacity-75">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Copyright Bar -->
+    <div class="bg-black py-3 mt-4">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center">
+            <div class="text-white-50 small mb-2 mb-md-0">
+                &copy; {{ date('Y') }} <strong>Nam Khuê Corporation</strong>. Đã đăng ký bản quyền.
+            </div>
+            <div class="text-white-50 small">
+                Phát triển hệ thống bởi <span class="text-danger fw-semibold">FPT Software Engineering</span>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<style>
+    .hover-white:hover { color: #ffffff !important; }
+    .hover-red:hover { color: #d90429 !important; padding-left: 4px; }
+    .transition-all { transition: all 0.3s ease; }
+</style>
 </html>

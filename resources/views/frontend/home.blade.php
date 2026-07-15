@@ -84,19 +84,22 @@
                                     </div>
 
                                     <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
-                                        <span class="text-muted small fw-semibold">Giá sỉ:</span>
                                         @auth
+                                            <span class="text-muted small fw-semibold">Giá sỉ đại lý:</span>
+                                            <span class="text-danger fw-bolder fs-6">
+                                                {{ number_format($product->wholesale_price ?? 0, 0, ',', '.') }}đ
+                                            </span>
+                                        @else
+                                            <span class="text-muted small fw-semibold">Giá bán lẻ:</span>
                                             <span class="text-dark fw-bold fs-6">
                                                 {{ number_format($product->price ?? 0, 0, ',', '.') }}đ
                                             </span>
-                                        @else
-                                            <a href="#" class="text-danger small fw-bold text-decoration-none" data-bs-toggle="modal" data-bs-target="#loginModal">
-                                                <i class="bi bi-lock-fill small"></i> Đăng nhập xem giá
-                                            </a>
                                         @endauth
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column gap-2">
+
+                                    <!-- THUẬT TOÁN ĐIỀU HƯỚNG HIỂN THỊ DỰA TRÊN TRẠNG THÁI XÁC THỰC -->
                                     @auth
                                         <form action="{{ route('frontend.cart.add', $product->id) }}" method="POST" class="m-0">
                                             @csrf
@@ -106,8 +109,8 @@
                                         </form>
                                     @endauth
 
-                                    <a href="https://zalo.me/0862542394?text={{ urlencode('Xin chào, tôi cần báo giá mã: ' . ($product->sku ?? '')) }}" target="_blank" class="btn btn-danger w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm btn-zalo">
-                                        <i class="bi bi-chat-dots-fill"></i> BÁO GIÁ ZALO
+                                    <a href="https://zalo.me/0862542394?text={{ urlencode('Xin chào, tôi cần tư vấn mã: ' . ($product->sku ?? '')) }}" target="_blank" class="btn btn-danger w-100 fw-bold d-flex justify-content-center align-items-center gap-2 shadow-sm btn-zalo">
+                                        <i class="bi bi-chat-dots-fill"></i> ZALO TƯ VẤN
                                     </a>
                                 </div>
                             </div>
