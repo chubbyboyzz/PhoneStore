@@ -183,4 +183,18 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<style>
+    /* CSS dọn dẹp các mũi tên tăng giảm mặc định của trình duyệt để giải phóng không gian */
+    .hide-spinners::-webkit-outer-spin-button,
+    .hide-spinners::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+        margin: 0;
+    }
+
+    /* Hỗ trợ cho trình duyệt Firefox */
+    .hide-spinners[type=number] {
+        -moz-appearance: textfield;
+    }
+</style>
 @endsection
