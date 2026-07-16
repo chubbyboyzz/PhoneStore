@@ -15,26 +15,21 @@ class HomeController extends Controller
      */
     public function index(Request $request): View
     {
-
-
-
         try {
+            // 1. TRUY VẤN DỮ LIỆU BỘ LỌC (Chỉ lấy ID và Name để tối ưu bộ nhớ RAM)
+            $brands = \App\Models\Brand::orderBy('name', 'asc')->get(['id', 'name']);
+
             $query = Product::query();
 
             // Lọc theo Category
             if ($request->filled('category')) {
                 $categorySlug = $request->category;
-
-                // 1. Tìm ID của danh mục dựa trên slug
                 $category = \App\Models\Category::where('slug', $categorySlug)->first();
 
-                // 2. Ép truy vấn
                 if ($category) {
                     $query->where('category_id', $category->id);
                 } else {
-                    // Phòng thủ (Defensive Programming):
-                    // Nếu user tự gõ bừa 1 slug không tồn tại trên URL, ép truy vấn trả về mảng rỗng
-                    $query->where('id', '<', 0);
+                    $query->where('id', '<', 0); // Phòng thủ dữ liệu rác
                 }
             }
 
@@ -69,15 +64,10 @@ class HomeController extends Controller
                 $query->orderBy('created_at', 'desc');
             }
 
-
-
-
             $products = $query->paginate(12)->withQueryString();
 
-
-
-
-            return view('frontend.home', compact('products'));
+            // 2. BƠM DỮ LIỆU $brands SANG TẦNG GIAO DIỆN
+            return view('frontend.home', compact('products', 'brands'));
 
         } catch (Exception $e) {
             dd([

@@ -37,19 +37,21 @@
                                         </td>
                                         <td class="text-danger fw-semibold">{{ number_format($details['price'], 0, ',', '.') }}đ</td>
 
-                                        <!-- CỘT SỐ LƯỢNG MỚI (TƯƠNG TÁC ĐƯỢC) -->
-                                        <td>
-                                            <div class="input-group input-group-sm mx-auto">
-                                                <button class="btn btn-outline-secondary btn-qty" type="button" data-action="minus" data-id="{{ $id }}">-</button>
 
-                                                <input type="number" class="form-control text-center input-qty fw-bold"
+                                        <td>
+                                            <div class="input-group input-group-sm mx-auto" style="width: 140px;">
+                                                <button class="btn btn-outline-secondary btn-qty flex-shrink-0" type="button" data-action="minus" data-id="{{ $id }}">-</button>
+
+                                                <!-- Thay đổi max-width thành width cố định 80px, thêm max="999999" và class hide-spinners -->
+                                                <input type="number" class="form-control text-center input-qty fw-bold hide-spinners"
                                                        id="qty-{{ $id }}"
                                                        data-id="{{ $id }}"
                                                        value="{{ $details['quantity'] }}"
                                                        min="1"
-                                                       style="max-width: 50px;">
+                                                       max="999999"
+                                                       style="width: 80px;">
 
-                                                <button class="btn btn-outline-secondary btn-qty" type="button" data-action="plus" data-id="{{ $id }}">+</button>
+                                                <button class="btn btn-outline-secondary btn-qty flex-shrink-0" type="button" data-action="plus" data-id="{{ $id }}">+</button>
                                             </div>
                                         </td>
 

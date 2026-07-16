@@ -298,6 +298,43 @@
                             </div>
                         </div>
                         <button type="submit" class="btn btn-danger w-100 fw-bold py-2 rounded-3 shadow-sm mb-3">ĐĂNG NHẬP HỆ THỐNG</button>
+                         <a href="#" class="text-danger fw-bold small text-decoration-none ms-1" onclick="document.getElementById('register-tab').click(); return false;">
+                                    Đăng ký ngay
+                        </a>
+                    </form>
+
+                    <form action="{{ route('frontend.register') }}" method="POST">
+                        @csrf
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Tên Cửa hàng / Đại lý <span class="text-danger">*</span></label>
+                            <input type="text" name="name" class="form-control shadow-none" required placeholder="VD: Phụ kiện Quang Thắng">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Số điện thoại Zalo <span class="text-danger">*</span></label>
+                            <input type="tel" name="phone" class="form-control shadow-none" required placeholder="SĐT để nhân viên liên hệ xác minh">
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold small">Email đăng nhập <span class="text-danger">*</span></label>
+                            <input type="email" name="email" class="form-control shadow-none" required placeholder="Email sử dụng để đăng nhập">
+                        </div>
+
+                        <!-- KHỐI MẬT KHẨU ĐÃ ĐƯỢC CẤU TRÚC LẠI -->
+                        <div class="row gx-2">
+                            <div class="col-6 mb-4">
+                                <label class="form-label fw-semibold small">Mật khẩu <span class="text-danger">*</span></label>
+                                <input type="password" name="password" class="form-control shadow-none" required placeholder="Mật khẩu (Tối thiểu 6 ký tự)">
+                            </div>
+                            <div class="col-6 mb-4">
+                                <label class="form-label fw-semibold small">Nhập lại mật khẩu <span class="text-danger">*</span></label>
+                                <input type="password" name="password_confirmation" class="form-control shadow-none" required placeholder="Xác nhận lại mật khẩu">
+                            </div>
+                        </div>
+
+                        <button type="submit" class="btn btn-dark w-100 fw-bold py-2 rounded-3 shadow-sm text-uppercase">
+                            Gửi yêu cầu xét duyệt
+                        </button>
                     </form>
                 </div>
             </div>

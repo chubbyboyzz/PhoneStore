@@ -21,17 +21,53 @@
         </div>
 
         <div class="row">
+            <!-- KHU VỰC BỘ LỌC TÌM KIẾM BÊN TRÁI -->
             <div class="col-lg-3 mb-4 mb-lg-0">
                 <div class="bg-white p-4 rounded-4 shadow-sm border border-secondary-subtle sticky-top" style="top: 80px; z-index: 1;">
-                    <h5 class="fw-bold border-bottom pb-3 mb-4"><i class="bi bi-funnel-fill text-danger me-2"></i> Bộ lọc tìm kiếm</h5>
+                    <h5 class="fw-bold border-bottom pb-3 mb-4"><i class="bi bi-funnel-fill text-danger me-2"></i> Bộ lọc nâng cao</h5>
 
-                    <div class="text-center py-5 text-muted fst-italic">
-                        <i class="bi bi-tools fs-1 mb-3 d-block opacity-50"></i>
-                        <p class="mb-0 small">Khu vực này đang được chừa lại để tích hợp bộ lọc nâng cao (Mức giá, ROM, HĐH...) ở giai đoạn tiếp theo.</p>
-                    </div>
+                    <!-- Form bọc toàn bộ bộ lọc, tự submit khi click radio -->
+                    <form action="{{ route('home') }}" method="GET">
+
+                        <!-- Giữ lại các tham số hiện tại (Search, Sort, Category) để bảo toàn URL -->
+                        @if(request()->filled('search')) <input type="hidden" name="search" value="{{ request()->search }}"> @endif
+                        @if(request()->filled('sort')) <input type="hidden" name="sort" value="{{ request()->sort }}"> @endif
+                        @if(request()->filled('category')) <input type="hidden" name="category" value="{{ request()->category }}"> @endif
+
+                        <!-- LỌC THEO THƯƠNG HIỆU -->
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-dark mb-3">Thương hiệu</h6>
+                            <div class="d-flex flex-column gap-2 pe-2" style="max-height: 280px; overflow-y: auto; scrollbar-width: thin;">
+
+                                <!-- Nút: Tất cả thương hiệu -->
+                                <div class="form-check">
+                                    <input class="form-check-input custom-radio" type="radio" name="brand" id="brand_all" value=""
+                                           onchange="this.form.submit()" {{ !request('brand') ? 'checked' : '' }}>
+                                    <label class="form-check-label text-secondary fw-medium" for="brand_all" style="cursor: pointer;">
+                                        Tất cả thương hiệu
+                                    </label>
+                                </div>
+
+                                <!-- Lặp danh sách thương hiệu từ Controller truyền sang -->
+                                @if(isset($brands))
+                                    @foreach($brands as $brand)
+                                    <div class="form-check">
+                                        <input class="form-check-input custom-radio" type="radio" name="brand" id="brand_{{ $brand->id }}"
+                                               value="{{ $brand->id }}" onchange="this.form.submit()"
+                                               {{ request('brand') == $brand->id ? 'checked' : '' }}>
+                                        <label class="form-check-label text-secondary fw-medium" for="brand_{{ $brand->id }}" style="cursor: pointer;">
+                                            {{ $brand->name }}
+                                        </label>
+                                    </div>
+                                    @endforeach
+                                @endif
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
 
+            <!-- KHU VỰC HIỂN THỊ SẢN PHẨM BÊN PHẢI -->
             <div class="col-lg-9">
 
                 <div class="bg-white p-3 rounded-4 shadow-sm border border-secondary-subtle mb-4 d-flex flex-column flex-lg-row justify-content-between align-items-lg-center gap-3">
@@ -85,12 +121,12 @@
 
                                     <div class="d-flex justify-content-between align-items-center pt-2 border-top border-secondary border-opacity-25">
                                         @auth
-                                            <span class="text-muted small fw-semibold">Giá sỉ đại lý:</span>
+                                            <span class="text-muted small fw-semibold">Giá sỉ:</span>
                                             <span class="text-danger fw-bolder fs-6">
                                                 {{ number_format($product->wholesale_price ?? 0, 0, ',', '.') }}đ
                                             </span>
                                         @else
-                                            <span class="text-muted small fw-semibold">Giá bán lẻ:</span>
+                                            <span class="text-muted small fw-semibold">Giá:</span>
                                             <span class="text-dark fw-bold fs-6">
                                                 {{ number_format($product->price ?? 0, 0, ',', '.') }}đ
                                             </span>
@@ -98,8 +134,6 @@
                                     </div>
                                 </div>
                                 <div class="d-flex flex-column gap-2">
-
-                                    <!-- THUẬT TOÁN ĐIỀU HƯỚNG HIỂN THỊ DỰA TRÊN TRẠNG THÁI XÁC THỰC -->
                                     @auth
                                         <form action="{{ route('frontend.cart.add', $product->id) }}" method="POST" class="m-0">
                                             @csrf
@@ -146,5 +180,13 @@
     .product-card a.text-decoration-none:hover h6 { color: var(--nk-red) !important; }
     .btn-zalo { background-color: var(--nk-red); transition: all 0.2s ease-in-out; }
     .btn-zalo:hover { background-color: #b30015; transform: scale(1.02); }
+    /* CSS cho bộ lọc Radio */
+    .custom-radio:checked {
+        background-color: var(--nk-red, #dc3545);
+        border-color: var(--nk-red, #dc3545);
+    }
+    .form-check-label:hover {
+        color: var(--nk-red, #dc3545) !important;
+    }
 </style>
 @endpush

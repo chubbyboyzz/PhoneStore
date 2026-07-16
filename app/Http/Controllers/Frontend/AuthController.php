@@ -40,37 +40,46 @@ class AuthController extends Controller
      */
     public function register(Request $request)
     {
-        // 1. Kiểm tra tính hợp lệ của dữ liệu đầu vào
+        // 1. RÀO CHẮN KIỂM DUYỆT (Validation Layer)
+        // Hệ thống sẽ tự động quét CSDL và chặn đứng Request nếu phát hiện trùng lặp
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email',
-            'password' => 'required|min:6|confirmed', // Yêu cầu có ô password_confirmation
-            'phone' => 'nullable|string|max:20',
+            'password' => 'required|min:6|confirmed',
+
+            // THUẬT TOÁN MỚI: Ràng buộc tính duy nhất của Số điện thoại
+            // Chuyển từ 'nullable' sang 'required' vì đây là kênh liên hệ chốt sale
+            'phone' => 'required|string|max:20|unique:users,phone',
+
             'address' => 'nullable|string|max:255',
         ], [
             'email.unique' => 'Email này đã được đăng ký trên hệ thống!',
             'password.min' => 'Mật khẩu bảo mật phải từ 6 ký tự trở lên.',
-            'password.confirmed' => 'Xác nhận mật khẩu nhập lại không trùng khớp!'
+            'password.confirmed' => 'Xác nhận mật khẩu nhập lại không trùng khớp!',
+
+            // THÔNG BÁO LỖI UI/UX: Hiển thị cảnh báo trực quan khi nhập trùng SĐT
+            'phone.required' => 'Vui lòng cung cấp số điện thoại Zalo để đối soát.',
+            'phone.unique' => 'Số điện thoại này đã được kết nối với một đại lý khác!'
         ]);
 
         try {
-            // 2. Tiến hành tạo tài khoản mới
-            $user = new \App\Models\User();
-            $user->name = $request->name;
-            $user->email = $request->email;
-            $user->password = \Illuminate\Support\Facades\Hash::make($request->password);
-            $user->phone = $request->phone;
-            $user->address = $request->address;
-            $user->is_active = true; // Khách tự đăng ký mặc định cho hoạt động luôn
-            $user->save();
+            // 2. TẦNG THỰC THỂ (Entity Model)
+            // Áp dụng Mass Assignment (OOP) thay vì gán tay từng thuộc tính
+            // Lưu ý: Đảm bảo Model User đã khai báo $fillable cho các trường này
+            \App\Models\User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => \Illuminate\Support\Facades\Hash::make($request->password),
+                'phone' => $request->phone,
+                'address' => $request->address,
+                'is_active' => 0 // Đóng băng tài khoản, chờ Admin phê duyệt
+            ]);
 
-            // 3. Đăng nhập tự động cho khách ngay sau khi đăng ký xong
-            Auth::login($user);
-
-            return redirect()->route('home')->with('success', 'Đăng ký tài khoản đại lý thành công! Chào mừng ông.');
+            return back()->with('success', 'Đã gửi yêu cầu đăng ký tài khoản thành công! Vui lòng chờ Admin duyệt và kích hoạt.');
 
         } catch (\Exception $e) {
-            return back()->withInput()->with('error', 'Đăng ký thất bại, có lỗi: ' . $e->getMessage());
+            // 3. TẦNG XỬ LÝ NGOẠI LỆ (Exception Handling)
+            return back()->withInput()->with('error', 'Đăng ký thất bại, sự cố hệ thống: ' . $e->getMessage());
         }
     }
 
